@@ -173,7 +173,7 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique we have $R(\bar{B
     \item If $R$ is right-unique and  $\bar{A}_{[i]} \in \sigma_{[i]}$ for each $i\in\{1,\ldots, \dim(\sigma)\}$ then
         $(R(\bar{A})\!\!\downarrow)_{[j]}\in R(\sigma)_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$.
     \item If $R$ is right-unique, then $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
-    \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}' \rbar{\supseteq} \bar{\sigma}$ such that $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$ and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau}')\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
+    \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}' \rbar{\supseteq} \bar{\sigma}$ such that $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$ and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
 \end{enumerate}
 \end{lemma}
 
@@ -191,7 +191,7 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique we have $R(\bar{B
         \item Since $R$ is right-unique, we have $R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow_{[i]}\, = \bar{\sigma}_{[j]}\to\bar{A}_{[j]}$ where  $j\, R\, i$. 
         Similarly, $R(\bar{\sigma})_{[i]} =  \bar{\sigma}_{[j]}$ and %
         $R(\bar{A})\!\!\downarrow_{[i]} = \bar{A}_{[j]}$ where  $j\, R\, i$. Consequently, we obtain $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
-        \item Since $R$ is left-total, for all $i \in \{1, \ldots, \dim(\bar{\sigma})\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau}')\}$ such that $i\,R\,j$, for which we set $\bar{\sigma}'_{[i]} := \bar{\tau}_{[j]}$, satisfying the required properties.
+        \item Since $R$ is left-total, for all $i \in \{1, \ldots, \dim(\bar{\sigma})\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $i\,R\,j$, for which we set $\bar{\sigma}'_{[i]} := \bar{\tau}_{[j]}$, satisfying the required properties.
     \end{enumerate}
 \end{proof}
 
@@ -342,10 +342,10 @@ $\Gamma \vdash_k t : \bar{A}$ means that the length of vectors in some derivatio
 
 \begin{lemma}[Dimension Weakening]
     \label{lemma:dimension-weakening}
-    If $\Gamma\vdash_k t : A$ and $k<m$ then $\Gamma\vdash_m t:A$.    
+    If $\Gamma\vdash_k t : \bar{A}$ and $k<m$ then $\Gamma\vdash_m t:\bar{A}$.    
 \end{lemma}
 \begin{proof}
-    The proof is by induction over $t$. All cases follow immediately from the induction hypothesis except from the case when $t=x$ for some variable $x$. In this case the dimension restriction $n\leq k$ is replaced by $n\leq m$, which obviously holds given $k<m$.
+    The proof is by induction over $t$. All cases follow immediately from the induction hypothesis except for the case when $t=x$ for some variable $x$. In this case the dimension restriction $n\leq k$ is replaced by $n\leq m$, which obviously holds given $k<m$.
 \end{proof}
 
 
@@ -383,7 +383,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
         and for some $i$ the environment $\Delta$ is such that
         $\Delta_{[j]}=\Gamma_{[j]}$  for $j:1\leq j \leq i$ and
         $\Delta_{[j]}=\Gamma_{[j-1]}$  for $j:i< j < n+1$ and
-        $\bar{B} = (\bar{A}_{[1]},\ldots,\bar{A}_{[i-1]},\bar{A}_{[i]}, \bar{A}_{[i]}\bar{A}_{[i+1]},\ldots,A_{[n]})$  
+        $\bar{B} = (\bar{A}_{[1]},\ldots,\bar{A}_{[i-1]},\bar{A}_{[i]},\bar{A}_{[i]},\bar{A}_{[i+1]},\ldots,\bar{A}_{[n]})$  
         then $\Delta \vdash_{k~{\color{red} k+1?}} t : \bar{B}$.
 \label{en:weak-dim-add}
 \end{enumerate}
@@ -460,7 +460,7 @@ The number of subformulae of a given type or set of types is polynomial in the n
         While subderivations $\Delta_i \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$ satisfy Property~(\ref{lemma:subformula:typ}), they do not necessarily satisfy Property~(\ref{lemma:subformula:env}).
         By Lemma~\ref{lem:apps_inversion}(\ref{prop:apps_inversion:subset}) type assumptions in $\Delta_i$ for $i \in \{1, \ldots, n\}$ may be strict subsets of subformulae in $\mathcal{F}$.
         By Lemma~\ref{lem:weak} and Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:saturate}) we can weaken the type assumptions by saturating the sets of types to subformulae in $\mathcal{F}$.
-        This results in derivation environments $\Delta_1', \ldots, \Delta_n'$ and subderivations of jugdments $\Delta_i' \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$ satisfying properties (\ref{lemma:subformula:env}) and (\ref{lemma:subformula:typ}).
+        This results in derivation environments $\Delta_1', \ldots, \Delta_n'$ and subderivations of judgments $\Delta_i' \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$ satisfying properties (\ref{lemma:subformula:env}) and (\ref{lemma:subformula:typ}).
         We obtain the claim by the induction hypothesis.
     \end{description}
 \end{proof}
@@ -527,7 +527,7 @@ If $t$ is of shape $x\,u_1 \ldots u_n$, then we use Lemma~\ref{lem:apps_inversio
 By the pigeonhole principle, if a type environment contains more than ${(N+1)}^{k}$ variables, some must have identical type vectors, and redundant copies can be removed without affecting derivability.
 In the non-deterministic guess of the shape $\lambda x.u$, if $x$ is assigned the vector $\Gamma(y)$ for some $y \in \dom(\Gamma)$, we can equivalently guess $\lambda x.u[x := y]$ instead and remove the assumption on $x$.
 
-Overall, the space required by the alternating decision procedure is polynomial in ${(N+1)}^{k}$, yielding an \textsf{AEXPSPACE}, or equivalently \textsf{2-EXPTIME}, decision procedure.
+Overall, the space required by the alternating decision procedure is polynomial in ${(N+1)}^{k}$, yielding an \textsf{AEXPSPACE}, or equivalently, a \textsf{2-EXPTIME} decision procedure.
 \end{proof}
 
 \begin{lemma}
@@ -535,7 +535,7 @@ Overall, the space required by the alternating decision procedure is polynomial 
 \end{lemma}
 
 \begin{proof}
-    Similar to the proof of Theorem~\ref{thm:upper_complexity_bound}, the number of distinct vectors in environments in recursive invocation of the decision procedure is ${N+1}^{k}$, which is polynomial for any fixed $k$.
+    Similar to the proof of Theorem~\ref{thm:upper_complexity_bound}, the number of distinct vectors in recursive invocation of the decision procedure is ${(N+1)}^{k}$, which is polynomial for any fixed $k$.
     This yields an \textsf{APSPACE}, or equivalently, an \textsf{EXPTIME} decision procedure.
 \end{proof}
 
@@ -584,17 +584,16 @@ $\bar{B}_{[i]} = \bar{B}_{[j]}$ and $\forall x.\Delta(x)_{[i]} = \Delta(x)$, the
 Use Lemma~\ref{lem:transform} to collapse redundant entries and idempotence of intersection.
 \end{proof}
 
-
 \begin{lemma}[substitution lemma]
     If $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash_k u : \bar{A}$, then $\Gamma \cup R(\Delta) \vdash_k t[x := u] : \bar{B}$.
 \end{lemma}
 
 \begin{proof}
-    Assuming $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash u : \bar{A}$, we proceed by induction on $t$. We also note here that $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ implies that
+    Assuming $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash_k u : \bar{A}$, we proceed by induction on $t$. We also note here that $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ implies that
     $R\subseteq\{1,\ldots,\dim(\bar{B})\}\times\{1,\ldots,m\}$ where $m\leq k$.
     W.l.o.g. $\bar{A}$ has unique coordinates as we can remove duplicate ones by Lemma~\ref{lem:weak-dim}.
     \begin{description}
-    \item[Case $t = x$:] We have $\bar{B}_i \in R(\bar{A})_i$ for $i \in \{1, \ldots, \dim(\bar{B})\}$.
+    \item[Case $t = x$:] We have $\bar{B}_{[i]} \in R(\bar{A})_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{B})\}$.
     Therefore, there is a right-unique $R' \subseteq R$ such that $R'(\bar{A}) = \bar{B}$.
     By Lemma \ref{lem:transform} we have $R'(\Delta) \vdash_k u : R'(\bar{A})\!\!\downarrow$.
     Due to $R' \subseteq R$, by the weakening lemma (cf.\ Lemma~\ref{lem:weak}) we have $\Gamma \cup R(\Delta) \vdash_k u : \bar{B}$.
