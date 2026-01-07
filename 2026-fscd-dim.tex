@@ -513,32 +513,21 @@ Given $\Gamma$, $\bar{A}$, and $k$ it is decidable in \textsf{2-EXPTIME} whether
 In order to decide whether $\Gamma \vdash_k t : \bar{A}$ holds for some $t$, by subject reduction and strong normalization properties (TODO ref) it suffices to consider $t$ in $\beta$-normal form.
 We discuss an \textsf{AEXPSPACE} decision procedure, and obtain the result by the equivalence between \textsf{AEXPSPACE} and \textsf{2-EXPTIME}.
 
-TODO use subformula property explicitly
+Let $\mathcal{F} := \form(\bar{A}) \cup \bigcup \{\form(\bar{\tau}) \mid (y : \bar{\tau}) \in \Gamma\}$ be the set of all subformulae of types and sets of types occurring in $\Gamma$ and $\bar{A}$, and let $N := |\mathcal{F}|$ denote its cardinality.
+By Lemma~\ref{lemma:subformula}, we can consider a derivation of $\Gamma \vdash_k t : \bar{A}$ such that for each judgment $\Delta \vdash_k u : \bar{B}$ in this derivation each coordinate of occurring type vectors can take at most $N + 1$ distinct values (including the empty set for sets of types in environments).
+Therefore, the number of distinct $k$-dimensional type vectors to consider is bounded by ${(N+1)}^{k}$.
 
-First, we non-deterministically guess, whether $t$ is of shape $\lambda x.u$ for some $x$ and $u$, or of shape $x\,u_1 \ldots u_n$ for some $x \in \dom(\Gamma)$ and some $u_1, \ldots, u_n$ where $n$ is bounded by the maximal nesting of the arrow type constructor to the right in types occurring in $\Gamma(x)$.
+The decision procedure works as follows.
+First, we non-deterministically guess whether $t$ is of shape $\lambda x.u$ for some $x$ and $u$, or of shape $x\,u_1 \ldots u_n$ for some $x \in \dom(\Gamma)$ and some $u_1, \ldots, u_n$ where $n$ is bounded by the maximal nesting of the arrow type constructor to the right in types occurring in $\Gamma(x)$.
 
 If $t$ is of shape $\lambda x.u$, then by Lemma~\ref{lem:lam_inversion} we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{A'}$ for some $\bar{\sigma}$ and $\bar{A'}$, and we recursively decide whether $\Gamma, x : \bar{\sigma} \vdash_k u : \bar{A'}$ holds for some $u$.
 
 If $t$ is of shape $x\,u_1 \ldots u_n$, then we use Lemma~\ref{lem:apps_inversion}, universally branching in $i \in \{1, \ldots, n\}$, and non-deterministically guessing the necessary relation $R_i$ (bounded in cardinality by $k^2$), type vector $\bar{A}_i$, and environment $\Delta_i$ to recursively decide whether $\Delta_i \vdash_k u_i : \bar{A}_i$ holds for some $u_i$.
 
-In both of the above cases, we uphold the following invariant:
-any recursive invocation of the decision procedure with environment $\Gamma'$ and assigned type $\bar{A}'$ satisfies
-\begin{itemize}
-    \item each coordinate of $\bar{A}'$ occurs as a subformula in types in $\Gamma$ or in $\bar{A}$
-    \item each non-empty coordinate of $\Gamma'(x)$ occurs as a subformula in types in $\Gamma$ or in $\bar{A}$
-\end{itemize}
+By the pigeonhole principle, if a type environment contains more than ${(N+1)}^{k}$ variables, some must have identical type vectors, and redundant copies can be removed without affecting derivability.
+In the non-deterministic guess of the shape $\lambda x.u$, if $x$ is assigned the vector $\Gamma(y)$ for some $y \in \dom(\Gamma)$, we can equivalently guess $\lambda x.u[x := y]$ instead and remove the assumption on $x$.
 
-If $t$ is of shape $\lambda x.u$, then the above invariant is satisfied by Lemma~\ref{lem:lam_inversion}.
-If $t$ is of shape $x\,u_1 \ldots u_n$, then the above invariant is satisfied by Properties (\ref{prop:apps_inversion:type}), (\ref{prop:apps_inversion:subformula_Gamma}), and (\ref{prop:apps_inversion:subformula_Delta}) of Lemma~\ref{lem:apps_inversion}.
-
-Let $N$ be the number of subformulae occurring in $\Gamma$ or $\bar{A}$.
-Including the empty set, the number of distinct coordinates to consider in environments for inhabitant search is at most ${N+1}$.
-Therefore, the number of distinct vectors to consider is ${(N+1)}^{k}$.
-By the pigeonhole principle, if there are more variables in a type environment, some must have identical types and redundant copies can be removed.
-Wlog. in the non-deterministic guess of the shape $\lambda x.u$, if $x$ is assigned an identical type vector to some $y$, we can equivalently guess $\lambda y.u[x := y]$ instead).
-Similarly, the coordinates of assigned types $\bar{B}$ in the derivation are subformulae of $\Gamma$ or $\bar{A}$.
-
-Overall, the space required by the alternating decision procedure is polynomial in ${(N+1)}^{k}$.
+Overall, the space required by the alternating decision procedure is polynomial in ${(N+1)}^{k}$, yielding an \textsf{AEXPSPACE}, or equivalently \textsf{2-EXPTIME}, decision procedure.
 \end{proof}
 
 \begin{lemma}
