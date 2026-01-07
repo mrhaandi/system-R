@@ -365,7 +365,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
     induction hypothesis we have $\Delta \vdash_k u : R(\bar{B}) \Rightarrow \bar{A}$.
     By rule ($\Rightarrow$E) we have $\Delta \cup R(\Delta') \vdash_k u\,v : \bar{A}$.
     Due to $R(\Delta') \rbar{\subseteq}  \Gamma \rbar{\subseteq} \Delta$ we have 
-    $\Delta \cup R(\Delta') = \Delta$, obtaining and the claim.\qedhere
+    $\Delta \cup R(\Delta') = \Delta$, obtaining the claim.\qedhere
 \end{description}
 \end{proof}
 
@@ -416,7 +416,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
     Left-totality of relations $R_1, \ldots, R_n$ for Property~(\ref{prop:apps_inversion:dims}) is established using Lemma~\ref{lem:weak-dim}.
 \end{proof}
 
-With each type or a set of types we associate of set of subformulae (types or sets of types), by the following Definition~\ref{def:subformula}.
+With each type or a set of types we associate a set of subformulae (types or sets of types), by the following Definition~\ref{def:subformula}.
 
 \begin{definition}[Subformula]\label{def:subformula}~
 \begin{itemize}
@@ -678,7 +678,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
         \item[Case $t=x$.] If $\Gamma_{[i]}\vdash_S x:\bar{A}_{[i]}$ for each $i$ then each $\Gamma_{[i]}$ contains declaration $x:\bar{\sigma}_{[i]}$ such that $\bar{A}_{[i]}\in\bar{\sigma}_{[i]}$. 
         Consequently, $\bar{A}\rbar{\in}\bar{\sigma}$. \edmark
         %
-        \item[Case $t=\lambda x.u$.] If  $\Gamma_{[i]}\vdash_S \lambda x.u:\bar{A}_{[i]}$ for each $i\in\{1,\ldots,n\}$, then these judgments must be result of ($\to$I) rule. Consequently, $\bar{A}_{[i]} = \bar{\sigma}_{[i]}\to \bar{B}_{[i]}$ for some $\bar{\sigma}$ and $\bar{B}_i$ and we have derivations for $\Gamma_{[i]},x:\bar{\sigma}_{[i]}\vdash_S u:\bar{B}_{[i]}$. By the induction hypothesis, we obtain that $\Gamma, x:\bar{\sigma}\vdash u:\bar{B}$. We can now apply ($\Rightarrow$I) rule and obtain $\Gamma\vdash \lambda x.u:\bar{\sigma}\Rightarrow \bar{B}$.
+        \item[Case $t=\lambda x.u$.] If  $\Gamma_{[i]}\vdash_S \lambda x.u:\bar{A}_{[i]}$ for each $i\in\{1,\ldots,n\}$, then these judgments must be result of ($\to$I) rule. Consequently, $\bar{A}_{[i]} = \bar{\sigma}_{[i]}\to \bar{B}_{[i]}$ for some $\bar{\sigma}$ and $\bar{B}$ and we have derivations for $\Gamma_{[i]},x:\bar{\sigma}_{[i]}\vdash_S u:\bar{B}_{[i]}$. By the induction hypothesis, we obtain that $\Gamma, x:\bar{\sigma}\vdash u:\bar{B}$. We can now apply ($\Rightarrow$I) rule and obtain $\Gamma\vdash \lambda x.u:\bar{\sigma}\Rightarrow \bar{B}$.
         %
         \item[Case $t=u\; v$.] If  $\Gamma_{[i]}\vdash_S u\, v:\bar{A}_{[i]}$ then this can be only derived by ($\to$E) rule. Consequently, we have derivations for 
         $\Gamma_{[i]}\vdash_S u : \bar{\sigma}_{[i]}\to \bar{A}_{[i]}$ and $\Gamma_{[i]}\vdash_S v:\bar{\sigma}_{[i]}$.
@@ -716,9 +716,8 @@ Here are the rules of the strict system slightly adapted to notation used in thi
         for $j\in\{1,\ldots,n\}$. From
         the induction hypothesis we get $\Gamma\vdash u:\bar\sigma\Rightarrow\bar{A}$, and then
         we can apply rule ($\Rightarrow$E) to obtain
-        $
-        \bar\Gamma\cup R(\Delta)\vdash u\, v:\bar{A}$.
-        Note that $R(\Delta) = \bar\Gamma$ by observation (\ref{eq:bartimes}) above. So we indeed arrive at a derivation for $\bar\Gamma\vdash u\, v:\bar{A}$.\qedhere
+        $\Gamma \cup R(\Delta)\vdash u\, v:\bar{A}$.
+        Note that $R(\Delta) = \Gamma$ by observation (\ref{eq:bartimes}) above. So we indeed arrive at a derivation for $\Gamma\vdash u\, v:\bar{A}$.\qedhere
      \end{description}
 \end{proof}
 
