@@ -1,0 +1,1349 @@
+\documentclass[a4paper,USenglish,cleveref, autoref, thm-restate]{lipics-v2021}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{bussproofs}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{stmaryrd}
+\usepackage{xspace}
+%This is a template for producing LIPIcs articles. 
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
+
+%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Bounded Parallel Intersection Type System} %TODO Please add
+
+%\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
+
+\author{Andrej Dudenhefner}{TU Dortmund University, Germany}{andrej.dudenhefner@cs.tu-dortmund.de}{https://orcid.org/0000-0003-1104-444X}{}{}%TODO mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty. Please provide at least the name of the affiliation and the country. The full address is optional. Use additional curly braces to indicate the correct name splitting when the last name consists of multiple name parts.
+
+\author{Aleksy Schubert}{Warsaw University, Poland}{alx@mimuw.edu.pl}{}{}{}
+
+\author{Jakob Rehof}{TU Dortmund University, Germany}{jakob.rehof@cs.tu-dortmund.de}{}{}
+
+\authorrunning{A. Dudenhefner, A. Schubert, and J. Rehof} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+\Copyright{Andrej Dudenhefner, Aleksy Schubert, and Jakob Rehof} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[100]{\textcolor{red}{Replace ccsdesc macro with valid one}} %TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
+
+\keywords{Dummy keyword} %TODO mandatory; please add comma-separated list of keywords
+
+\category{} %optional, e.g. invited paper
+
+%\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\var}{var}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\form}{form}
+
+\newcommand{\rbar}[1]{\mathrel{\bar{#1}}}
+\newcommand{\edmark}{{\color{red} mark} }
+
+\begin{document}
+
+\maketitle
+
+%TODO mandatory: add short abstract of the document
+\begin{abstract}
+Bounded Parallel Intersection Type System
+\end{abstract}
+
+\section{Bounded Parallel Intersection Type System}
+
+We denote \emph{intersection types} by $A, B$, finite sets of intersection types by $\sigma, \tau$, and \emph{type atoms} by $a, b$.
+
+\begin{definition}[Intersection Types]
+\label{def:itypes} ~
+
+$\begin{array}{rcl}
+%\mbox{Types} \ni & 
+A, B &::=& a \mid \sigma \to A\\
+%\{\}\mbox{-Types}\ni &
+\sigma, \tau &::=& \{A_1, \ldots, A_n\} \text{ where } n \geq 0
+\end{array}$
+\end{definition}
+These intersection types are a variant of strict types considered by van Bakel \cite{Bakel92,Bakel04,Bakel11}.
+
+We denote vectors of types and sets of types by $\bar{A}$ and $\bar{\sigma}$ respectively.
+If $\bar{\sigma} = (\sigma_1, \ldots, \sigma_n)$ and $\bar{A} = (A_1, \ldots, A_n)$, then $\bar{\sigma} \Rightarrow \bar{A} = (\sigma_1 \to A_1, \ldots, \sigma_n \to A_n)$, in particular $()\Rightarrow()=()$. We write $\bar{A}_{[i]}$ for $A_i$ and $\bar{\sigma}_{[i]}$ for $\sigma_i$.
+The \emph{dimension} of a vector is the number of its \emph{coordinates}, that is $\dim(A_1, \ldots, A_n) = n$. The relation $\subseteq$ is naturally defined for sets of types. We define a similar relation on vectors of sets of types so that 
+$\bar{\sigma} \rbar\subseteq \bar\tau$
+when $\bar\sigma_{[i]}\subseteq\bar\tau_{[i]}$ for each $i=1,\ldots,n$ where $n=\dim(\bar\sigma)=\dim(\bar\tau)$. We also define $\bar{\sigma}\cup\bar{\tau} = (\bar\sigma_{[1]}\cup\bar\tau_{[1]},\ldots,\bar\sigma_{[n]}\cup\bar\tau_{[n]})$ where $n=\dim(\bar\sigma)=\dim(\bar\tau)$.
+
+\begin{definition}[Environment of Dimension $d$]
+An \emph{environment} $\Sigma$ is a finite set of \emph{type assumptions} having the shape $x : \sigma$ for distinct term variables. An \emph{environment} $\Gamma$ of dimension $d$ is a finite set of \emph{type assumptions} having the shape $x : \bar{\sigma}$ for distinct term variables such that $\dim(\bar{\sigma}) = d$.
+%$\Gamma ::=\{x_1 : \bar{\sigma_1}, \ldots, x_n : \bar{\sigma_n}\}$ where $x_i \neq x_j$ for $i \neq %j$ and $\dim(\Gamma) := \dim(\bar{\sigma_1}) = \cdots = \dim(\bar{\sigma_n}) = d$.
+\end{definition}
+Each environment $\Gamma$ is equipped with its dimension $\dim(\Gamma)$. In particular, the empty environment of dimension $0$ is distinct from the empty environment of dimension $1$. 
+
+We may extend an environment $\Gamma$ by an additional assumption $x : \bar{\sigma}$, written $\Gamma, x : \bar{\sigma}$, where $\dim(\bar{\sigma}) = \dim(\Gamma)$ and $x$ does not appear in any assumption in $\Gamma$.
+The \emph{domain} of an environment $\Gamma$ is given by $\dom(\Gamma) = \{ x \mid (x : \bar{\sigma}) \in \Gamma \text{ and } \bar{\sigma} \neq   (\emptyset, \ldots, \emptyset)\}$.
+We identify $\Gamma$ and $\Gamma, x : (\emptyset, \ldots, \emptyset)$. 
+When $(x:\bar{\sigma})\in\Gamma$ we write $\Gamma(x)$ for $\bar{\sigma}$.
+We write $\Gamma_{[i]}$ for $\{ x:\bar{\sigma}_{[i]} \mid x:\bar{\sigma}\in\Gamma\}$.
+We extend the relation $\rbar{\subseteq}$ to environments of the same dimension so that $\Gamma\rbar\subseteq\Delta$ when for each $x\in\dom(\Gamma)$ such that for each $x:\bar\sigma\in \Gamma$ and 
+$x:\bar\tau\in\Delta$ we have $\bar\sigma\rbar\subseteq\bar{\tau}$.  We define $\Gamma_1\cup\Gamma_2$ to be the environment $\Delta$ the domain of which is $\dom(\Gamma_1)\cup\dom(\Gamma_2)$ such that for $x\in\dom(\Gamma_i)-\dom(\Gamma_{3-i})$
+we have $\Delta(x) = \Gamma_i(x)$ where $i=1,2$ and for $x\in\dom(\Gamma_1)\cap\dom(\Gamma_2)$
+we have $\Delta(x)_{[j]} = (\Gamma_1)_{[j]}\cup(\Gamma_2)_{[j]}$ for $j\in\{1,\ldots,\dim(\Gamma_1)\}$.
+
+\begin{lemma}[Properties of Type Environments]
+\label{lem:env-properties}~
+\begin{enumerate}
+\item If $\Gamma\rbar\subseteq\Delta$ then $\Gamma\cup\Delta=\Delta$.
+\end{enumerate}
+\end{lemma}
+
+Extending notation~\cite{DudenhefnerU21} from surjective functions to binary relations we define type vector transformations as follows.
+
+\begin{definition}[Type Vector Transformation]
+Let $R \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ be a binary relation where $n, m \geq 0$.
+\begin{itemize}
+\item $R(A_1, \ldots, A_n) := (\tau_1, \ldots, \tau_m)$ where $\tau_i = \{A_j \mid j \, R\, i\}$
+\item $R(\sigma_1, \ldots, \sigma_n) := (\tau_1, \ldots, \tau_m)$ where $\tau_i = \bigcup \{\sigma_j \mid j \, R\, i\}$
+\item $R(\{x_1 : \bar{\sigma_1}, \ldots, x_l : \bar{\sigma_l}\}) := \{x_1 : R(\bar{\sigma_1}), \ldots, x_l : R(\bar{\sigma_l})\}$
+\end{itemize}
+\end{definition}
+
+\begin{example}
+For $R = \{(1, 1), (1, 3), (2, 1), (3, 2), (3, 3)\}$ we have \[R(a, b, c) = (\{a, b\}, \{c\}, \{a, c\})\]
+\end{example}
+
+We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is 
+\emph{left-total} when for each $i\in \{1, \ldots, n\}$ there is $j$ such that $(i,j)\in R$. We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is \emph{right-unique} when for each $i\in\{1, \ldots, m\}$ there is exactly one  $j\in\{1, \ldots, n\}$
+such that $(j,i)\in R$. In case a relation $R$ is right-unique we have $R(\bar{B}) = (\{A_1\},\ldots, \{A_m\})$, thus we can define a vector $R(\bar\sigma)\!\downarrow\, = (A_1,\ldots,A_m)$.
+
+\begin{lemma}[Properties of Type Vector Transformations]
+\label{lem:rel-properties}~
+\begin{enumerate}
+    \item For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \subseteq R'(\bar{\sigma})$.
+    \item If $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$ and $R$ is left-total, then there exists $R''$ such that $R''(\bar{A}) = \bar{\sigma}$.
+    \item If $\bar{A}$ has distinct coordinates, $R''(\bar{A}) = \bar{\sigma}$, $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$, and $R$ is left-total, then $R \circ R'' \subseteq R'$.
+    \item $R(\Gamma) \cup (R\circ R'(\Delta)) = R(\Gamma \cup R'(\Delta))$
+    \item If $R$ is right-unique and  $\bar{A}_{[i]} \in \sigma_{[i]}$ for each $i\in\{1,\ldots, \dim(\sigma)\}$ then
+        $(R(\bar{A})\!\!\downarrow)_{[j]}\in R(\sigma)_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$.
+    \item If $R$ is right-unique, then $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
+    \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}' \rbar{\supseteq} \bar{\sigma}$ such that $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$ and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau}')\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}~
+    \begin{enumerate}
+        \item Obvious. (?)
+        \item  Consider $R'' = \{ (i, j) \mid \exists k.i\, R'\, k \mbox{ and } j\, R\, k \mbox{ and } \bar{A}_{[i]}\in\bar\sigma_{[j]}\}$.
+            We have $R''(\bar{A})_{[j]} = \{ \bar{A}_{[i]} \mid i\, R''\, j \} = \{ \bar{A}_{[i]} \mid  \exists k.i\, R'\, k \mbox{ and } j\, R\, k \mbox{ and } \bar{A}_{[i]}\in\bar\sigma_{[j]}\}$.
+            This set is included in $\bar\sigma_{[j]}$ as for each its element $\bar{A}_{[i]}$ we have
+            $\bar{A}_{[i]}\in\bar\sigma_{[j]}$. Similarly, $\bar\sigma_{[j]}\subseteq R(\bar\sigma)_{[k]}$ for some $k$ as $R$ is left-total. As $R(\bar\sigma)_{[k]}\subseteq R'(\bar{A})_{[k]}$, each element of $\bar{\sigma}_{[j]}$ must be equal to some $\bar{A}_{[i]}$ such that $i\, R'\, k$.
+        \item We have $(R \circ R'')(\bar{A}) = R(\bar{\sigma}) \subseteq R'(\bar{A})$.
+        Since $\bar{A}$ has distinct coordinates, we obtain the claim.     
+        \item Obvious. (?)
+        \item Obvious. (?)
+        \item Since $R$ is right-unique, we have $R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow_{[i]}\, = \bar{\sigma}_{[j]}\to\bar{A}_{[j]}$ where  $j\, R\, i$. 
+        Similarly, $R(\bar{\sigma})_{[i]} =  \bar{\sigma}_{[j]}$ and %
+        $R(\bar{A})\!\!\downarrow_{[i]} = \bar{A}_{[j]}$ where  $j\, R\, i$. Consequently, we obtain $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
+        \item Since $R$ is left-total, for all $i \in \{1, \ldots, \dim(\bar{\sigma})\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau}')\}$ such that $i\,R\,j$, for which we set $\bar{\sigma}'_{[i]} := \bar{\tau}_{[j]}$, satisfying the required properties.
+    \end{enumerate}
+\end{proof}
+
+Judgments in the following \emph{parallel intersection type system} are of shape $\Gamma \vdash t : \bar{A}$ such that $\dim(\Gamma) = \dim(\bar{A})$.
+
+\begin{definition}[Parallel Intersection Type System, TODO: remove, define via $\vdash_k$]
+\label{def:type-system}
+~\\
+
+\begin{minipage}{\textwidth}
+\centering
+\begin{tabular}{l}
+{\RightLabel{\textnormal{(Ax)}}
+\AxiomC{$A_i \in \sigma_i$ for $i = 1, \ldots, n$}
+\UnaryInfC{$\Gamma, x : (\sigma_1, \ldots, \sigma_n) \vdash x : (A_1, \ldots, A_n)$}
+\DisplayProof}
+\\\\
+{\RightLabel{\textnormal{($\Rightarrow$I)}}
+\AxiomC{$\Gamma, x: \bar{\sigma} \vdash t : \bar{A}$}
+\UnaryInfC{$\Gamma \vdash \lambda x.t : \bar{\sigma} \Rightarrow \bar{A}$}
+\DisplayProof}\quad
+{\RightLabel{\textnormal{($\Rightarrow$E)}}
+\AxiomC{$\Gamma \vdash t : R(\bar{A}) \Rightarrow \bar{B}$}
+\AxiomC{$\Delta \vdash u : \bar{A}$}
+\BinaryInfC{$\Gamma \cup R(\Delta) \vdash t \; u : \bar{B}$}
+\DisplayProof}
+\end{tabular}
+\end{minipage}
+\end{definition}
+
+\begin{definition}[Parallel Intersection Type System of Bounded Dimension]
+\label{def:bounded-type-system}
+~\\
+
+\begin{minipage}{\textwidth}
+\centering
+\begin{tabular}{l}
+{\RightLabel{\textnormal{(Ax)}}
+\AxiomC{$A_i \in \sigma_i$ for $i = 1, \ldots, n$}
+\AxiomC{$n \leq k$}
+\BinaryInfC{$\Gamma, x : (\sigma_1, \ldots, \sigma_n) \vdash_k x : (A_1, \ldots, A_n)$}
+\DisplayProof}
+\\\\
+{\RightLabel{\textnormal{($\Rightarrow$I)}}
+\AxiomC{$\Gamma, x: \bar{\sigma} \vdash_k t : \bar{A}$}
+\UnaryInfC{$\Gamma \vdash_k \lambda x.t : \bar{\sigma} \Rightarrow \bar{A}$}
+\DisplayProof}\quad
+{\RightLabel{\textnormal{($\Rightarrow$E)}}
+\AxiomC{$\Gamma \vdash_{k} t : R(\bar{A}) \Rightarrow \bar{B}$}
+\AxiomC{$\Delta \vdash_{k} u : \bar{A}$}
+\BinaryInfC{$\Gamma \cup R(\Delta) \vdash_k t \; u : \bar{B}$}
+\DisplayProof}
+\end{tabular}
+\end{minipage}
+\end{definition}
+
+We may leave out the actual bound, if it is immaterial.
+
+\begin{definition}[Parallel Intersection Type System (Derived)]
+    $\Gamma \vdash t : \bar{A}$ means $\Gamma \vdash_k t : \bar{A}$ for some $k$.
+\end{definition}
+
+\begin{lemma}
+The following rule is derivable:
+{\RightLabel{\textnormal{($nil$)}}
+\AxiomC{\phantom{1337}}
+\UnaryInfC{$\emptyset \vdash_k t : ()$}
+\DisplayProof}.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $t$.
+\begin{description}
+    \item[Case $t = x$:] Due to $\emptyset, x : () = \emptyset$, by rule (Ax) we have $\emptyset \vdash_k x: ()$.
+    \item[Case $t = \lambda x.u$:] By the induction hypothesis we have $\emptyset \vdash_k u : ()$.
+    Due to $\emptyset, x : () = \emptyset$ and $() \Rightarrow () = ()$, by rule ($\Rightarrow$I) we have $\emptyset \vdash_k \lambda x.u : ()$ .
+    \item[Case $t = u\,v$:] By the induction hypothesis we have $\emptyset \vdash_k u : ()$ and $\emptyset \vdash_k v : ()$.
+    For $R = \emptyset$ we have $() = R(()) \Rightarrow ()$ and {\color{red} $\Gamma \cup R(\Delta) = \emptyset$.} \marginpar{\color{red}Shouldn't $\Gamma,\Delta$ be just $\emptyset$?}
+    Therefore, by rule ($\Rightarrow$E) we have $\emptyset \vdash_k u\,v : ()$.\qedhere
+\end{description}
+\end{proof}
+
+Similar systems:
+\begin{itemize}
+\item The system $\lambda^{\mbox{CIL}}$ by Wells et al
+  \cite{WellsDMT02} (see \cite{WellsH02} for a simplified version of
+  the system) is a system in Church style with explicit type
+  annotations in $\lambda$-binders where different derivations for the
+  same subterm are managed by means of records. A record of types with
+  labels from $I$ is derived here by a record of terms of
+  corresponding labels from $I$.
+\item The proof system ISL presented by Pimentel, Ronchi Della Rocca
+  and Roversi \cite{PimentelRR12} features independent derivations in
+  tuples led according to the same proof rules. Effectively this works
+  like an intersection type system with vectors. However, the system
+  does not have proof terms. A version of the proof system formulated
+  in terms of a sequent calculus is presented in \cite{RoccaSSV10}.
+\end{itemize}
+
+Dissimilar systems:
+\begin{itemize}
+\item The system by Luigi Liquori and Simona Ronchi della Rocca
+  \cite{LiquoriR07} is a system with explicit annotations at
+  $\lambda$-binders. It introduces  terms in which variables in
+  binders are annotated with indices. Then these indices serve as
+  pointers to binders in derivations, and the binders in derivations
+  contain types.
+\end{itemize}
+
+The following example demonstrates a type derivation in dimension $1$ for the term $\lambda x.x\,x$.
+It also illustrates that the occurrence of sets of types in derivations does not necessarily increase dimension.
+
+\begin{example}~\\
+    We have $\emptyset \vdash_1 \lambda x.x\,x : (\{a, \{a\} \to b\} \to b)$ by the following derivation, using $R = \{(1, 1)\}$:
+
+\medskip
+
+\AxiomC{$\{x : (\{\{a\} \to b\})\} \vdash_1 x : R(a) \Rightarrow (b)$}
+\AxiomC{$\{x : (\{a\})\} \vdash_1 x : (a)$}
+\BinaryInfC{$\{ x : (\{a, \{a\} \to b\})\} \vdash_1 x\,x : (b)$}
+\UnaryInfC{$\emptyset \vdash_1 \lambda x.x\,x : (\{a, \{a\} \to b\} \to b)$}
+\DisplayProof
+\end{example}
+
+\begin{example}~\\
+Let 
+\begin{itemize}
+\item $\Gamma_1 = \{x : (\{b, c\} \to a)\}$
+\item $\Gamma_2 = \{y : (a \to b, a \to c), z : (a, a)\}$
+\item $R_1 = \{(1,1), (2,1)\}$
+\item $R_2 = \{(1,1), (1,2)\}$
+\end{itemize}
+We have the following derivation
+
+
+\AxiomC{$\Gamma_1 \vdash x : R_1(b, c) \Rightarrow (a)$}
+\AxiomC{$\{y : (a \to b, a \to c)\} \vdash y : R_2(a) \Rightarrow (b, c)$}
+\AxiomC{$\{z : (a)\} \vdash z : (a)$}
+\BinaryInfC{$\Gamma_2 \vdash y\,z : (b, c)$}
+\BinaryInfC{$\Gamma_1 \cup R_1(\Gamma_2) \vdash x\,(y\,z) : (a)$}
+\DisplayProof
+\end{example}
+
+\begin{definition}[Dimensional Restriction]
+{\color{red}
+$\Gamma \vdash_k t : \bar{A}$ means that the length of vectors in some derivation of $\Gamma \vdash t : \bar{A}$ is at most $k$.}
+\end{definition}
+
+\begin{lemma}[Dimension Weakening]
+    \label{lemma:dimension-weakening}
+    If $\Gamma\vdash_k t : A$ and $k<m$ then $\Gamma\vdash_m t:A$.    
+\end{lemma}
+\begin{proof}
+    The proof is by induction over $t$. All cases follow immediately from the induction hypothesis except from the case when $t=x$ for some variable $x$. In this case the dimension restriction $n\leq k$ is replaced by $n\leq m$, which obviously holds given $k<m$.
+\end{proof}
+
+
+\begin{lemma}[Weakening]
+\label{lem:weak}
+If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Delta \vdash_k t : \bar{A}$.
+\end{lemma}
+
+\begin{proof}
+    Assuming $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, we proceed by induction on $t$.
+    \begin{description}
+    \item[Case $t = x$:] Due to $\bar{A} \rbar{\in} \Gamma(x) \rbar{\subseteq} \Delta(x)$ we obtain the claim by rule (Ax).
+    \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have $\Delta, x : \bar{\sigma} \vdash_k u : \bar{B}$.
+    By rule ($\Rightarrow$I) we obtain the claim.
+    \item[Case $t = u\,v$:] For some $\Delta'$, $\Gamma'$, $\bar{B}$, and $R$ such that $\Gamma = \Gamma' \cup R(\Delta')$ we have $\Gamma' \vdash_k u : R(\bar{B}) \Rightarrow \bar{A}$ and $\Delta' \vdash_k v : \bar{B}$.
+    Due to $\Gamma' \rbar{\subseteq} \Gamma \rbar{\subseteq} \Delta$ by the
+    induction hypothesis we have $\Delta \vdash_k u : R(\bar{B}) \Rightarrow \bar{A}$.
+    By rule ($\Rightarrow$E) we have $\Delta \cup R(\Delta') \vdash_k u\,v : \bar{A}$.
+    Due to $R(\Delta') \rbar{\subseteq}  \Gamma \rbar{\subseteq} \Delta$ we have 
+    $\Delta \cup R(\Delta') = \Delta$, obtaining and the claim.\qedhere
+\end{description}
+\end{proof}
+
+\begin{lemma}[Coordinate Weakening] ~
+\label{lem:weak-dim}
+\begin{enumerate}
+    \item If $\Gamma \vdash_k t : \bar{A}$ with $\dim(\bar{A})=n$ 
+        and for some $i$ the environment $\Delta$ is such that
+        $\Delta_{[j]}=\Gamma_{[j]}$  for $j:1\leq j < i$ and
+        $\Delta_{[j]}=\Gamma_{[j+1]}$  for $j:i< j < n$ and
+        $\bar{B} = (\bar{A}_{[1]},\ldots,\bar{A}_{[i-1]},\bar{A}_{[i+1]},\ldots,A_{[n]})$  
+        then $\Delta \vdash_k t : \bar{B}$.
+    \label{en:weak-dim-remove}
+    \item If $\Gamma \vdash_k t : \bar{A}$ with $\dim(\bar{A})=n$ 
+        and for some $i$ the environment $\Delta$ is such that
+        $\Delta_{[j]}=\Gamma_{[j]}$  for $j:1\leq j \leq i$ and
+        $\Delta_{[j]}=\Gamma_{[j-1]}$  for $j:i< j < n+1$ and
+        $\bar{B} = (\bar{A}_{[1]},\ldots,\bar{A}_{[i-1]},\bar{A}_{[i]}, \bar{A}_{[i]}\bar{A}_{[i+1]},\ldots,A_{[n]})$  
+        then $\Delta \vdash_{k~{\color{red} k+1?}} t : \bar{B}$.
+\label{en:weak-dim-add}
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+    In both cases the proof is by a straightforward induction  over $t$.
+\end{proof}
+
+\begin{lemma}\label{lem:lam_inversion}
+    If $\Gamma \vdash_k \lambda x.t : \bar{B}$, then $\bar{B} = \bar{\sigma} \Rightarrow \bar{A}$ for some $\bar{\sigma}$ and $\bar{A}$, and $\Gamma, x : \bar{\sigma} \vdash_k t : \bar{A}$.
+\end{lemma}
+
+\begin{proof}
+    Case analysis regarding the last rule application.
+\end{proof}
+
+\begin{lemma}\label{lem:apps_inversion}
+    If $\Gamma \vdash_k x\,u_1 \ldots u_n : \bar{B}$, then there exist $\bar{A}_1, \ldots, \bar{A}_n$, $R_1, \ldots, R_n$, $\Delta_1 \ldots \Delta_n$ such that
+    \begin{enumerate}
+        \item\label{prop:apps_inversion:dims} $R_i \subseteq \{1, \ldots, \dim(\bar{A}_i)\} \times \{1, \ldots, k\}$ is left-total and $\dim(\bar{A}_i) \leq k$ for $i \in \{1, \ldots, n\}$
+        \item\label{prop:apps_inversion:type} $R_1(\bar{A}_1) \Rightarrow \cdots \Rightarrow R_n(\bar{A}_n) \Rightarrow \bar{B} \rbar{\in} \Gamma(x)$
+        \item\label{prop:apps_inversion:subset} $R_i(\Delta_i(y)) \rbar{\subseteq} \Gamma(y)$ for $i \in \{1, \ldots, n\}$ and $y \in \dom(\Delta_i)$
+        \item\label{prop:apps_inversion:Delta} $\Delta_i \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$
+        \item\label{prop:apps_inversion:partial_type} $\Gamma \vdash_k x\,u_1\ldots u_i : R_{i+1}(\bar{A}_{i+1}) \Rightarrow \cdots \Rightarrow R_n(\bar{A}_n) \Rightarrow \bar{B}$ for $i \in \{1, \ldots, n\}$
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+    Induction on $n$ and case analysis regarding the last rule application.
+    Left-totality of relations $R_1, \ldots, R_n$ for Property~(\ref{prop:apps_inversion:dims}) is established using Lemma~\ref{lem:weak-dim}.
+\end{proof}
+
+With each type or a set of types we associate of set of subformulae (types or sets of types), by the following Definition~\ref{def:subformula}.
+
+\begin{definition}[Subformula]\label{def:subformula}~
+\begin{itemize}
+    \item $\form(a) := \{a\}$
+    \item $\form(\sigma \to A) := \{\sigma \to A\} \cup \form(\sigma) \cup \form(A)$
+    \item $\form(\{A_1, \ldots, A_n\}) := \{\{A_1, \ldots, A_n\}\} \cup \bigcup_{i=1}^n \form(A_i)$
+\end{itemize}
+The notion of occurring subformulae is extended to vectors:
+\begin{itemize}
+    \item $\form((A_1, \ldots, A_n)) := \form(A_1) \cup \cdots \cup \form(A_n)$
+    \item $\form((\sigma_1, \ldots, \sigma_n)) := \form(\sigma_1) \cup \cdots \cup \form(\sigma_n)$
+\end{itemize}
+\end{definition}
+
+The number of subformulae of a given type or set of types is polynomial in the number of nodes in its syntax tree, illustrated by the following example.
+
+\begin{example}
+    $\form(\{a, b\} \to c) = \{\{a, b\} \to c, \{a, b\}, a, b, c\}$.
+    In particular, the set $\{a, b\}$ as well as the types $a, b$ are subformulae of $\{a, b\} \to c$, but the sets $\{a\}$ and $\{b\}$ are not.
+\end{example}
+
+\begin{lemma}[Subformula Property]
+    \label{lemma:subformula}
+    Assume that $\Gamma\vdash_k t : \bar{A}$ such that $t$ is in $\beta$-normal form.
+    Let $\mathcal{F} := \form(\bar{A}) \cup \bigcup \{\form(\bar{\tau}) \mid (y : \bar{\tau}) \in \Gamma\}$ be the set of all subformulae of types and sets of types occurring in $\Gamma$ and $\bar{A}$.
+    
+    There is a derivation of $\Gamma\vdash_k t : \bar{A}$
+    such that for each judgment $\Delta\vdash_k u : \bar{B}$ in this derivation we have
+    \begin{enumerate}
+        \item\label{lemma:subformula:env} for $(x:\bar{\sigma})\in\Delta$ and $i\in\{1,\ldots,\dim(\Delta)\}$ we have $\sigma_{[i]} \in \mathcal{F} \cup \{\emptyset\}$
+        \item\label{lemma:subformula:typ} $\bar{B}_{[i]} \in \mathcal{F}$ for $i\in\{1,\ldots,\dim(\bar{B})\}$
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+    Induction on the size of $t$. There are two cases.
+    \begin{description}
+        \item[Case $t = \lambda x.u$:] Follows immediately from Lemma~\ref{lem:lam_inversion} and the induction hypothesis.
+        \item[Case $t = x\,u_1 \ldots u_n$:] There exist $\bar{A}_1, \ldots, \bar{A}_n$, $R_1, \ldots, R_n$, $\Delta_1 \ldots \Delta_n$ satisfying properties of Lemma~\ref{lem:apps_inversion}(\ref{prop:apps_inversion:dims}) -- Lemma~\ref{lem:apps_inversion}(\ref{prop:apps_inversion:partial_type}).
+        By Lemma~\ref{lem:apps_inversion}(\ref{prop:apps_inversion:partial_type}), judgments $\Gamma \vdash_k x\,u_1\ldots u_i : R_{i+1}(\bar{A}_{i+1}) \Rightarrow \cdots \Rightarrow R_n(\bar{A}_n) \Rightarrow \bar{B}$ satisfy properties (\ref{lemma:subformula:env}) and (\ref{lemma:subformula:typ}).
+        While subderivations $\Delta_i \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$ satisfy Property~(\ref{lemma:subformula:typ}), they do not necessarily satisfy Property~(\ref{lemma:subformula:env}).
+        By Lemma~\ref{lem:apps_inversion}(\ref{prop:apps_inversion:subset}) type assumptions in $\Delta_i$ for $i \in \{1, \ldots, n\}$ may be strict subsets of subformulae in $\mathcal{F}$.
+        By Lemma~\ref{lem:weak} and Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:saturate}) we can weaken the type assumptions by saturating the sets of types to subformulae in $\mathcal{F}$.
+        This results in derivation environments $\Delta_1', \ldots, \Delta_n'$ and subderivations of jugdments $\Delta_i' \vdash_k u_i : \bar{A}_i$ for $i \in \{1, \ldots, n\}$ satisfying properties (\ref{lemma:subformula:env}) and (\ref{lemma:subformula:typ}).
+        We obtain the claim by the induction hypothesis.
+    \end{description}
+\end{proof}
+
+%{\color{blue}
+%
+%\begin{lemma}[Subformula Property]
+%    \label{lemma:subformula}
+%    Assume that $\Gamma\vdash_k t : A$ and $t$ is in normal form.
+%    There is a derivation of $\Gamma\vdash_k t : A$
+%    such that for each judgement $\Delta\vdash_k u : B$ in this derivation
+%    for each $(x:\bar{\sigma})\in\Delta$ the type $\sigma_{[i]}$ for $i\in\{1,\ldots,\dim(\Delta)\}$
+%     is a subtype of types in $\Gamma, A$ as well as
+%    $B$ is a subtype of types in $\Gamma, A$.
+%\end{lemma}
+%\begin{proof}
+%    The proof is by induction over $t$. The case of $t=x$ follows trivially. The case of $t=\lambda x.u$ follows immediately by structural application of induction. For the case when $t=u\, v$ we observe that since $t$ is in normal form, it has the form $xu_1\ldots u_n$ for some variable declared
+%    as $(x:\bar{\sigma})\in\Gamma$. By Lemma~\ref{lem:apps_inversion} there exist $\bar{A}_1, \ldots, \bar{A}_n$, $R_1, \ldots, R_n$, $\Gamma_0$, $\Delta_1 \ldots \Delta_n$ such that
+%    the conditions (1)-(6) of the lemma are satisfied.
+%    Now, the derivation for $t$ consists of a series of ($\Rightarrow E$) rules followed by the (Ax)
+%    rule to derive the type for $x$. In case of the initial (Ax) rule the conclusion of the current lemma follows immediately. The $i$-th application of the 
+%    ($\Rightarrow E$) rule is
+%    $$
+%    {\RightLabel{\textnormal{($\Rightarrow$E)}}
+%    \AxiomC{$\Gamma_i \vdash_{k} xu_1\ldots u_{i-1} : R_{i}(\bar{A}_i) \Rightarrow \cdots\Rightarrow R_{n}(\bar{A}_n)\Rightarrow\bar{B}$}
+%    \AxiomC{$\Delta_i \vdash_{k} u_i : \bar{A}_i$}
+%    \BinaryInfC{$\Gamma_i \cup R_i(\Delta_i) \vdash_k x\; u_1\ldots u_i : R_{i+1}(\bar{A}_{i+1}) \Rightarrow \cdots\Rightarrow R_{n}(\bar{A}_n)\Rightarrow\bar{B}$}
+%    \DisplayProof}
+%    $$
+%    By the coordinate weakening lemma, cf.\ Lemma~\ref{lem:weak-dim}(\ref{en:weak-dim-remove}), we may assume that for each $l\in\{1,\ldots,\dim(\Delta_i)\}$ there is $j\in\{1,\ldots,\dim(\Gamma_i)\}$ such that $l\,R_i\,j$
+%    since each dimension $l$ without $j$ such that $l\,R_i\,j$ can be removed. Assume $\Delta_i = x_1:\bar{\rho_1},\ldots,x_p:\bar{\rho_p}$. For each such $\bar{\rho_j}$ consider 
+%    $\bar{\rho}'_j$ such that $\bar{\rho}'_{j[q]} = \bigcup{\cal A}_q$ where
+%    ${\cal A}_q = \{\bar{\tau}_{[q']} \mid x_j:\bar{\tau}\in \Gamma \mbox{ and } q\,R\,q'\}$.
+%    Note that $\bar{\rho}_{j}\rbar{\subseteq}\bar{\rho}'_{j}$.
+%    Let $\Delta'_i=x_1:\bar{\rho'_1},\ldots,x_p:\bar{\rho'_p}$. 
+%    %
+%    By the weakening lemma, cf.\ Lemma~\ref{lem:weak}, we obtain
+%    $\Delta'_i\vdash u_i : \bar{A}_i$. Additionally, $\Gamma_i,R_i(\Delta_i)\rbar{\subseteq}\Gamma_i,R(\Delta'_i)\rbar{\subseteq}\Gamma$ and
+%    by the same weakening lemma 
+%    In this way we reorganize all subderivations for $u_i$ and obtain our conclusion.
+%    {\color{red}potem trzeba będzie jeszcze IH zastosować}
+%\end{proof}
+%}
+
+\begin{theorem}\label{thm:upper_complexity_bound}
+Given $\Gamma$, $\bar{A}$, and $k$ it is decidable in \textsf{2-EXPTIME} whether $\Gamma \vdash_k t : \bar{A}$ holds for some $t$.
+\end{theorem}
+
+\begin{proof}[(Proof)]
+In order to decide whether $\Gamma \vdash_k t : \bar{A}$ holds for some $t$, by subject reduction and strong normalization properties (TODO ref) it suffices to consider $t$ in $\beta$-normal form.
+We discuss an \textsf{AEXPSPACE} decision procedure, and obtain the result by the equivalence between \textsf{AEXPSPACE} and \textsf{2-EXPTIME}.
+
+TODO use subformula property explicitly
+
+First, we non-deterministically guess, whether $t$ is of shape $\lambda x.u$ for some $x$ and $u$, or of shape $x\,u_1 \ldots u_n$ for some $x \in \dom(\Gamma)$ and some $u_1, \ldots, u_n$ where $n$ is bounded by the maximal nesting of the arrow type constructor to the right in types occurring in $\Gamma(x)$.
+
+If $t$ is of shape $\lambda x.u$, then by Lemma~\ref{lem:lam_inversion} we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{A'}$ for some $\bar{\sigma}$ and $\bar{A'}$, and we recursively decide whether $\Gamma, x : \bar{\sigma} \vdash_k u : \bar{A'}$ holds for some $u$.
+
+If $t$ is of shape $x\,u_1 \ldots u_n$, then we use Lemma~\ref{lem:apps_inversion}, universally branching in $i \in \{1, \ldots, n\}$, and non-deterministically guessing the necessary relation $R_i$ (bounded in cardinality by $k^2$), type vector $\bar{A}_i$, and environment $\Delta_i$ to recursively decide whether $\Delta_i \vdash_k u_i : \bar{A}_i$ holds for some $u_i$.
+
+In both of the above cases, we uphold the following invariant:
+any recursive invocation of the decision procedure with environment $\Gamma'$ and assigned type $\bar{A}'$ satisfies
+\begin{itemize}
+    \item each coordinate of $\bar{A}'$ occurs as a subformula in types in $\Gamma$ or in $\bar{A}$
+    \item each non-empty coordinate of $\Gamma'(x)$ occurs as a subformula in types in $\Gamma$ or in $\bar{A}$
+\end{itemize}
+
+If $t$ is of shape $\lambda x.u$, then the above invariant is satisfied by Lemma~\ref{lem:lam_inversion}.
+If $t$ is of shape $x\,u_1 \ldots u_n$, then the above invariant is satisfied by Properties (\ref{prop:apps_inversion:type}), (\ref{prop:apps_inversion:subformula_Gamma}), and (\ref{prop:apps_inversion:subformula_Delta}) of Lemma~\ref{lem:apps_inversion}.
+
+Let $N$ be the number of subformulae occurring in $\Gamma$ or $\bar{A}$.
+Including the empty set, the number of distinct coordinates to consider in environments for inhabitant search is at most ${N+1}$.
+Therefore, the number of distinct vectors to consider is ${(N+1)}^{k}$.
+By the pigeonhole principle, if there are more variables in a type environment, some must have identical types and redundant copies can be removed.
+Wlog. in the non-deterministic guess of the shape $\lambda x.u$, if $x$ is assigned an identical type vector to some $y$, we can equivalently guess $\lambda y.u[x := y]$ instead).
+Similarly, the coordinates of assigned types $\bar{B}$ in the derivation are subformulae of $\Gamma$ or $\bar{A}$.
+
+Overall, the space required by the alternating decision procedure is polynomial in ${(N+1)}^{k}$.
+\end{proof}
+
+\begin{lemma}
+    For any $k \in \mathbb{N}$, given $\Gamma$ and $\bar{A}$ it is decidable in \textsf{EXPTIME} whether $\Gamma \vdash_k t : \bar{A}$ holds for some $t$.
+\end{lemma}
+
+\begin{proof}
+    Similar to the proof of Theorem~\ref{thm:upper_complexity_bound}, the number of distinct vectors in environments in recursive invocation of the decision procedure is ${N+1}^{k}$, which is polynomial for any fixed $k$.
+    This yields an \textsf{APSPACE}, or equivalently, an \textsf{EXPTIME} decision procedure.
+\end{proof}
+
+
+
+\begin{lemma}
+\label{lem:transform}
+If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \times \{1, \ldots, m\}$ is right-unique, then $R(\Gamma) \vdash_n t : R(\bar{A})\!\!\downarrow$ where $n=\max(k,m)$.
+\end{lemma}
+
+\begin{proof}
+    Assuming $\Gamma \vdash_k t : \bar{A}$ and that $R$ is right-unique, we proceed by induction on $t$.
+    Let $n=\max(k,m)$.
+    \begin{description}
+    %
+    \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
+    Therefore, we have $(R(\bar{A}))\!\!\downarrow_{[j]}\in (R(\Gamma(x)))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
+    \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
+    %
+    $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})$.
+    %
+    As  $R$ is right-unique (cf.\ Lemma~\ref{lem:rel-properties}), $R(\bar{\sigma}) \Rightarrow R(\bar{B}) = R(\bar{\sigma} \Rightarrow \bar{B}) = R(\bar{A})$, by rule ($\Rightarrow$I) we have $R(\Gamma) \vdash_n \lambda x.u : R(\bar{A})\!\!\downarrow$.
+    %
+    \item[Case $t = u\,v$:] For some $\Delta$, $R'$, and $\bar{B}$ we have %
+    %
+    $\Delta \vdash_k v : R'(\bar{B})\!\!\downarrow$ 
+    %
+    and further %
+    %
+    $\Delta \vdash_n v : R'(\bar{B})\!\!\downarrow$ (cf.\ Lemma~\ref{lemma:dimension-weakening}).
+    %
+    By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})$.
+    Consider $R'' = R \circ R'$. As $R$ is right-unique, we have $R(R'(\bar{B}) \Rightarrow \bar{A}) = R''(\bar{B}) \Rightarrow R(\bar{A})$ and $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$ (cf.~Lemma~\ref{lem:rel-properties}).
+    By rule ($\Rightarrow$E) we have $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})$.\qedhere
+\end{description}
+\end{proof}
+
+The substitution lemma requires tight control over the \edmark
+
+\begin{lemma}
+If in a derivation of the judgment $\Gamma \vdash_k t : \bar{A}$ there occurs $\Delta \vdash_k u : \bar{B}$ such that for some distinct $i, j$
+$\bar{B}_{[i]} = \bar{B}_{[j]}$ and $\forall x.\Delta(x)_{[i]} = \Delta(x)$, then there is a derivation of $\Gamma \vdash_k t : \bar{A}$ that has no such property (TODO rephrase).
+\end{lemma}
+
+\begin{proof}
+Use Lemma~\ref{lem:transform} to collapse redundant entries and idempotence of intersection.
+\end{proof}
+
+
+\begin{lemma}[substitution lemma]
+    If $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash_k u : \bar{A}$, then $\Gamma \cup R(\Delta) \vdash_k t[x := u] : \bar{B}$.
+\end{lemma}
+
+\begin{proof}
+    Assuming $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash u : \bar{A}$, we proceed by induction on $t$. We also note here that $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ implies that
+    $R\subseteq\{1,\ldots,\dim(\bar{B})\}\times\{1,\ldots,m\}$ where $m\leq k$.
+    W.l.o.g. $\bar{A}$ has unique coordinates as we can remove duplicate ones by Lemma~\ref{lem:weak-dim}.
+    \begin{description}
+    \item[Case $t = x$:] We have $\bar{B}_i \in R(\bar{A})_i$ for $i \in \{1, \ldots, \dim(\bar{B})\}$.
+    Therefore, there is a right-unique $R' \subseteq R$ such that $R'(\bar{A}) = \bar{B}$.
+    By Lemma \ref{lem:transform} we have $R'(\Delta) \vdash_k u : R'(\bar{A})\!\!\downarrow$.
+    Due to $R' \subseteq R$, by the weakening lemma (cf.\ Lemma~\ref{lem:weak}) we have $\Gamma \cup R(\Delta) \vdash_k u : \bar{B}$.
+    \item[Case $t = y \neq x$:] We have $\Gamma \vdash_k y : \bar{B}$ and the claim follows by the weakening lemma (cf. Lemma~\ref{lem:weak}).
+    \item[Case $t = \lambda y.v$ such that $y \neq x$ and $y\not\in\var(u)$:] For some $\bar{\sigma}$ and $\bar{C}$ we have $\bar{B} = \bar{\sigma} \Rightarrow \bar{C}$ and %
+    %
+    $\Gamma, x : R(\bar{A}), y : \bar{\sigma} \vdash_k v : \bar{C}$.
+    %
+    By the induction hypothesis we have $\Gamma \cup R(\Delta), y : \bar{\sigma} \vdash_k v[x := u] : \bar{C}$.
+    The claim follows by rule ($\Rightarrow$I).
+    \item[Case $t = v\,w$:] For some $\Gamma'$, $\Delta'$, $R'$, $\bar{\sigma}$, $\bar{\tau}$, and $\bar{C}$ such that $\Gamma = \Gamma' \cup R'(\Delta')$ and $R(\bar{A}) = \bar{\tau} \cup R'(\bar{\sigma})$ we have $\Gamma', x : \bar{\tau} \vdash_k v : R'(\bar{C}) \Rightarrow \bar{B}$ and %
+    $\Delta', x : \bar{\sigma} \vdash_k w : \bar{C}$.
+    %
+    Note that $R'\subseteq\{1,\ldots,\dim(\bar{C})\}\times\{1,\ldots,\dim(\bar{B})\}$. 
+    W.l.o.g.~$R'$ is left-total. 
+    %(NOTE: $R'$ should not be be left-unique - then the dimension may increase).
+    In order to obtain the claim by rule ($\Rightarrow$E) we consider the corresponding premises.
+    \begin{itemize}
+        \item Due to $\bar{\tau} \subseteq R(\bar{A})$, by the weakening lemma 
+        (cf.\ Lemma~\ref{lem:weak}) and the induction hypothesis we have $\Gamma' \cup R(\Delta) \vdash_k v[x := u] : R'(\bar{C}) \Rightarrow \bar{B}$.
+        %
+        \item Due to $R'(\bar{\sigma}) \subseteq R(\bar{A})$ and since $R'$ is left-total and $\bar{A}$ has unique coordinates, by Lemma~\ref{lem:rel-properties} there exists a $R''$ such that $R'\circ R''\subseteq R$ and $R''(\bar{A}) = \bar{\sigma}$.
+        By the induction hypothesis we have $\Delta' \cup R''(\Delta) \vdash_k w[x := u] : \bar{C}$
+    \end{itemize}
+    By rule ($\Rightarrow$E) we have $\Gamma' \cup R(\Delta) \cup R'(\Delta' \cup R''(\Delta)) \vdash_k (v\,w)[x := u] : \bar{B}$.
+    By the weakening lemma (cf. Lemma~\ref{lem:weak}), it suffices to show that $\Gamma' \cup R(\Delta) \cup R'(\Delta') \cup R'(R''(\Delta)) \subseteq \Gamma \cup R(\Delta)$.
+    This follows from $\Gamma = \Gamma' \cup R'(\Delta')$, $R' \circ R'' \subseteq R$. \qedhere
+    %and Lemma~\ref{lem:rel-properties}. 
+\end{description}
+\end{proof}
+
+\edmark: (subject reduction)
+
+\section{Relation to Traditional Intersection Type Systems}
+
+As a technical tool to establish relation with the traditional intersection type systems, we use the strict system of van Bakel \cite[Section~5]{Bakel04,Bakel11}. This serves us to establish relation with the system of Barendregt, Coppo, Dezani{-}Ciancaglini \cite{BarendregtCD83}, which is expressed in Theorem~\ref{theorem:bcd} below.
+
+
+\begin{definition}[Strict Intersection Type System~{\cite[Definition~5.1]{Bakel11}}]
+\label{def:type-system}
+~\\
+Here are the rules of the strict system slightly adapted to notation used in this paper.
+
+~
+
+\begin{minipage}{\textwidth}
+\centering
+\begin{tabular}{l}
+{\RightLabel{\textnormal{($\cap$E)}}
+\AxiomC{$A \in \sigma$ }
+\UnaryInfC{$\Gamma, x : \sigma \vdash_S x : A$}
+\DisplayProof}\quad
+{\RightLabel{\textnormal{($\cap$I)}}
+\AxiomC{$\Sigma\vdash_S t : A_1, \cdots, \Sigma\vdash_S t : A_n$}
+\UnaryInfC{$\Sigma\vdash_S t : \{A_1,\ldots,A_n\}$}
+\DisplayProof}
+\\\\
+{\RightLabel{\textnormal{($\to$I)}}
+\AxiomC{$\Sigma, x: \sigma \vdash_S t : A$}
+\UnaryInfC{$\Sigma \vdash_S \lambda x.t : \sigma \to A$}
+\DisplayProof}\quad
+{\RightLabel{\textnormal{($\to$E)}}
+\AxiomC{$\Sigma \vdash_S t : \sigma \to B$}
+\AxiomC{$\Sigma \vdash_S u : \sigma$}
+\BinaryInfC{$\Sigma \vdash_S t\, u : B$}
+\DisplayProof}
+\end{tabular}
+\end{minipage}
+\end{definition}
+
+\begin{lemma}
+    \label{lemma:fromvanBakel}
+    %Assume that $\Sigma_i = \{ x_1:\sigma^1_i,\ldots, x_m:\sigma^m_i\}$ for $i\in\{1,\ldots, n\}$ as %well as $\bar\sigma^j = (\sigma^j_1,\ldots,\sigma^j_n)$ and $\bar{A} = (A_1,\ldots, A_n)$. 
+
+    If $\Gamma_{[i]}\vdash_S t:\bar{A}_{[i]}$ for each $i\in\{1,\ldots, n\}$ then $\Gamma\vdash t:\bar{A}$.
+\end{lemma}
+\begin{proof}
+    The proof is by induction over the structure of $t$. Assume the notation of the lemma formulation.
+
+     \begin{description}
+        %
+        \item[Case $t=x$.] If $\Gamma_{[i]}\vdash_S x:\bar{A}_{[i]}$ for each $i$ then each $\Gamma_{[i]}$ contains declaration $x:\bar{\sigma}_{[i]}$ such that $\bar{A}_{[i]}\in\bar{\sigma}_{[i]}$. 
+        Consequently, $\bar{A}\rbar{\in}\bar{\sigma}$. \edmark
+        %
+        \item[Case $t=\lambda x.u$.] If  $\Gamma_{[i]}\vdash_S \lambda x.u:\bar{A}_{[i]}$ for each $i\in\{1,\ldots,n\}$, then these judgments must be result of ($\to$I) rule. Consequently, $\bar{A}_{[i]} = \bar{\sigma}_{[i]}\to \bar{B}_{[i]}$ for some $\bar{\sigma}$ and $\bar{B}_i$ and we have derivations for $\Gamma_{[i]},x:\bar{\sigma}_{[i]}\vdash_S u:\bar{B}_{[i]}$. By the induction hypothesis, we obtain that $\Gamma, x:\bar{\sigma}\vdash u:\bar{B}$. We can now apply ($\Rightarrow$I) rule and obtain $\Gamma\vdash \lambda x.u:\bar{\sigma}\Rightarrow \bar{B}$.
+        %
+        \item[Case $t=u\; v$.] If  $\Gamma_{[i]}\vdash_S u\, v:\bar{A}_{[i]}$ then this can be only derived by ($\to$E) rule. Consequently, we have derivations for 
+        $\Gamma_{[i]}\vdash_S u : \bar{\sigma}_{[i]}\to \bar{A}_{[i]}$ and $\Gamma_{[i]}\vdash_S v:\bar{\sigma}_{[i]}$.
+        Then the only way to derive $\Gamma_{[i]}\vdash_S v:\bar{\sigma}_{[i]}$ is to use ($\cap$I) rule so that $\Gamma_{[i]}\vdash v:B^j_i$ where for some $k_i$  we have $\bar{\sigma}_{[i]} = \{ B^1_i,\ldots,B^{k_i}_i\}$. 
+        Assume $\Gamma = \{ x_1 :\bar{\sigma}^1,\ldots,x_m:\bar{\sigma}^m\}$. 
+        By the induction hypothesis we construct a derivation for 
+        $\Delta\vdash v:\bar{B}$ where 
+        \begin{displaymath}
+            \begin{array}{l}
+                \Delta = \{ x_1: \bar\tau^1,\ldots,x_m:\bar\tau^m\}\\
+                %
+                \bar\tau^i = (\underbrace{\sigma^i_{[1]},\ldots\sigma^i_{[1]}}_{k_1 \mbox{\small times}},
+                              \ldots, %
+                              \underbrace{\sigma^i_{[n]},\ldots\sigma^{i}_{[n]}}_{k_n \mbox{\small times}}
+                ) \quad \mbox{ for } i\in\{1,\ldots,m\}\\
+                % 
+                \bar{B} = (B^1_1,\ldots,B^{k_1}_1, %
+                 \ldots, %
+                 B^1_n,\ldots,B^{k_n}_n)
+            \end{array}
+        \end{displaymath}
+        Consider now, $l_0 =0$ and $l_i = \sum_{j=1}^{i-1}k_j$. We define relation 
+        %
+        $R = \{ (p,q) \mid q\in\{1,\ldots,n\} \mbox{ and } l_{q-1} < p \leq l_q\}$.
+        %
+        Observe that 
+        \begin{equation}
+        \label{eq:bartimes}
+            \begin{array}{l}
+                 R(\bar{B})_{[j]} = \bar{\sigma}_{[j]} \quad\mbox{and}\quad
+                 %
+                R(\Delta(x_j)) = \bar{\sigma}^j\\
+            \end{array}
+        \end{equation}
+        for $j\in\{1,\ldots,n\}$. From
+        the induction hypothesis we get $\Gamma\vdash u:\bar\sigma\Rightarrow\bar{A}$, and then
+        we can apply rule ($\Rightarrow$E) to obtain
+        $
+        \bar\Gamma\cup R(\Delta)\vdash u\, v:\bar{A}$.
+        Note that $R(\Delta) = \bar\Gamma$ by observation (\ref{eq:bartimes}) above. So we indeed arrive at a derivation for $\bar\Gamma\vdash u\, v:\bar{A}$.\qedhere
+     \end{description}
+\end{proof}
+
+\begin{lemma}
+    \label{lemma:toS}
+    If $\Gamma\vdash t:\bar{A}$ then 
+    for each $i\in\{1,\ldots,n\}$ we have
+    $\Gamma_{[i]}\vdash_S t:A_{[i]}$.
+\end{lemma}
+\begin{proof}
+    The proof is by induction over the structure of $t$. Assume the notation of the lemma formulation.
+    \begin{description}
+        \item[Case $t=x$.] If $\Gamma\vdash x:\bar{A}$ then it can be derived only by (Ax) rule. Consequently, there is a declaration $x:\bar{\sigma}\in\Gamma$ such that for $i\in\{1,\ldots, n\}$ we have $\bar{A}_{[i]}\rbar{\in}\bar{\sigma}_{[i]}$. Consequently, we can use ($\cap$E) rule to obtain $\Gamma_{[i]}\vdash_S x:\bar{A}_{[i]}$ for $i\in\{1,\ldots, n\}$.
+        %
+        \item[Case $t=\lambda x.u$.] The judgment $\Gamma\vdash \lambda x.u:\bar{A}$ can be derived only by ($\Rightarrow$I) rule and thus $\bar{A}=\bar{\sigma}\Rightarrow\bar{B}$ for some $\bar{\sigma}$ and $\bar{B}$ and also $\Gamma,x:\bar{\sigma}\vdash u:\bar{B}$
+        is derivable. By the induction hypothesis, we obtain that for each $i\in\{1,\ldots, n\}$ derivable is $\Gamma_{[i]},x:\bar{\sigma}_{[i]}\vdash_S u:\bar{B}_{[i]}$. Then rule ($\to$I) gives
+        us derivability of $\Gamma_{[i]}\vdash_S \lambda x.u:\bar{\sigma}_{[i]}\to\bar{B}_{[i]}$. As 
+        $\bar{\sigma}_{[i]}\to\bar{B}_{[i]} =\bar{A}_{[i]}$ we get the required conclusion.
+        %
+        \item[Case $t=u\; v$.] The judgment $\Gamma\vdash u\, v:\bar{A}$  can be derived only by ($\Rightarrow$E) rule. Consequently, $\Gamma = \Gamma'\cup R(\Delta)$ for some $\Delta$ and derivable are 
+        %
+        $\Gamma'\vdash u:\bar{\sigma}\Rightarrow\bar{A}$ as well as 
+        %
+        $\Delta\vdash v:\bar{B}$ 
+        %
+        where $R(\bar{B})_{[j]} = \bar{\sigma}_{[j]}$. By the induction hypothesis, we can derive
+        \begin{equation}
+        \label{eq:bardownstairs}
+            \begin{array}{ll}
+                 \Gamma'_{[i]}\vdash_S u:\bar{\sigma}_{[i]}\to\bar{A}_{[i]} 
+                 & \mbox{ for } i\in\{1,\ldots,n\}\\
+                 \Delta_{[j]}\vdash_S v:\bar{B}_{[j]} 
+                 & \mbox{ for } j\in\{1,\ldots,\dim(\bar{B})\}
+            \end{array}
+        \end{equation}
+        For each $i\in\{1,\ldots,n\}$ we consider indexes  
+        $\mathcal{I}_i = \{ p \mid (p,i)\in R\}$. %
+        %
+        Observe that $\Gamma'(x)\cup R(\Delta)(x)\rbar{\subseteq} \Gamma(x)$
+        for $x\in\dom(\Gamma)$ and consequently $(R(\Delta)(x))_{[i]}\subseteq(\Gamma(x))_{[i]}$.
+        This implies that $(\Delta(x))_{[j]}\subseteq(\Gamma(x))_{[i]}$ for $j\in\mathcal{I}_i$.
+        We can now apply weakening lemma to derivations in (\ref{eq:bardownstairs})
+        and obtain %
+        %
+        $\Gamma_{[i]}\vdash_S v:\bar{B}_{[j]}$ for $j\in\mathcal{I}_i$ as well as
+        %
+        $\Gamma_{[i]}\vdash_S u:\bar\sigma_{[i]}\to\bar{A}_{[i]}$.
+        %
+         We use ($\cap$I) rule now to derive 
+         %
+         $\Gamma_{[i]}\vdash v:\{ \bar{B}_{[j]} \mid j\in\mathcal{I}_i\}$.
+         %
+         Application of ($\to$E) rule gives $\Gamma_{[i]}\vdash_S u\, v:\bar{A}_{[i]}$ for each $i\in\{1,\ldots,n\}$. \qedhere
+    \end{description}
+\end{proof}
+
+As a final step, we establish the connection with the system BCD of Barendregt, Coppo, Dezani-Ciancaglini \cite{BarendregtCD83}. The set of types in this system is bigger than the set of strict types of van Bakel. However, for each type $\varphi$ in this system there is a set of strict types $A_1,\ldots,A_n$ such that $\varphi$ is
+equivalent to their intersection (cf.\ \cite[Lemma 2.2.2]{Bakel92}). This equivalence is the canonical equivalence induced by the quasi-order $\leq$ that is the subtyping relation in BCD system.
+Therefore, we do not lose any generality by writing $\Sigma\vdash_{BCD} t:\sigma$, where $\Sigma$ and $\sigma$ comply to the syntax used in this paper. We can also write $\Sigma\vdash_{BCD} t:A$ as strict types
+are a special case of BCD types.
+%
+%We can embed the intersection types from Definition~\ref{def:itypes} using the following
+%translation:
+%\begin{itemize}
+%    \item $a^\triangleleft = a$
+%    \item $(\sigma\to A)^\triangleleft = \sigma^\triangleleft\to A^\triangleleft$
+%    \item $\emptyset^\triangleleft = \omega$
+%    \item $\{A_1,\ldots,A_n\}^\triangleleft = 
+%        A_1^\triangleleft\land\cdots\land A_n^\triangleleft$. 
+%\end{itemize}
+%The translation naturally extends to environments by application of the transformation above to types.
+%
+%The formulation of the theorem that relates the strict system with the system of BCD
+%uses the standard semantical ordering $\leq$ on types. We recall it here for completeness. We say that $\varphi\leq\psi$ when the relation can be established by means of the following axioms:
+%\begin{itemize}
+%    \item $\varphi\leq\varphi$,
+%    \item $\varphi\leq\omega$ 
+%    \item $\omega\leq\omega\to\omega$ 
+%    \item $\varphi\land\psi\leq\varphi$
+%    \item $\varphi\land\psi\leq\psi$
+%    \item $(\varphi\to\psi)\land(\varphi\to\psi')\leq \varphi\to(\psi\land\psi')$
+%    \item $\varphi\leq\varphi'\leq\varphi'' \Rightarrow \varphi\leq\varphi''$
+%    \item $\varphi\leq\psi$ and $\varphi\leq\psi' \Rightarrow \varphi\leq(\psi\land\psi')$
+%    \item $\varphi'\leq\varphi$ and $\psi\leq\psi' \Rightarrow \varphi\to\psi\leq\varphi'\to\psi'$
+%\end{itemize}
+ To establish the relation between our system and the system BCD, we use the following statement mentioned in \cite[Section~5]{Bakel11}. 
+\begin{theorem}[van Bakel, \cite{Bakel11}]
+    \label{theorem:vanBakelS}
+    If $\Sigma\vdash_{BCD} t:\sigma$ then there are $\Sigma',\{A_1,\ldots,A_n\}$ such that $\Sigma\leq\Sigma'$, $\Sigma \vdash_{S} t:A_i$ for each $i\in\{1,\ldots,n\}$ and $\{A_1,\ldots,A_n\}\leq\sigma$.
+
+    Moreover, If $\Sigma \vdash_{S} t:A$ then $\Sigma\vdash_{BCD} t:A$.
+\end{theorem}
+A similar theorem was proved in \cite{Bakel92}  (Theorem 2.2.6) for another variant of the strict system the rules of which are derivable in the strict system of van Bakel used in this paper.
+
+Note that the formulation above omits the condition that $t$ is in $\lambda\bot$-normal form,
+which is present in \cite{Bakel92}. This condition is trivially fulfilled as our terms do not use the constant $\bot$. In addition, the original formulation in \cite{Bakel92} does not include the second part, which obtains a~derivation in BCD from the one in the strict system. However, this part easily follows by observation that the rules of the strict system in its presentation in \cite{Bakel11} are derivable in BCD system. We need one more result concerning the type ordering.
+\begin{proposition}
+    \label{prop:picking}
+    If $\Sigma\vdash_S t:B$ for each $B\in\sigma$ and $\sigma\leq\sigma'$ then
+    there is $\tau\subseteq\sigma$ such that $|\tau|\leq  |\sigma'|$ and $\tau\leq\sigma'$
+\end{proposition}
+\begin{proof}
+    For the proof we use an observation made by Hindley, cf. \cite[Lemma~3(i)]{Hindley82}, which also follows by easy induction from the work of Barendregt, Coppo, Dezani{-}Ciancaglini \cite[Lemma 2.4(ii)]{BarendregtCD83}.
+    \begin{quote}
+        If $\{A_1,\ldots,A_n\}\leq \{B_1,\ldots,B_m\}$ then for each $i\in\{1,\ldots,m\}$ there is $j\in\{1,\ldots,n\}$ such that $A_j\leq B_i$.
+    \end{quote}
+    To prove the current proposition we observe that $\sigma$ can be presented as $\{A_1,\ldots,A_n\}$ and $\sigma'$ as $\{B_1,\ldots,B_m\}$. By the observation above, we take for each $i\in\{1,\ldots,m\}$
+    only one $A_{j_i}$ such that $A_{j_i}\leq B_i$. We obtain then immediately that $\{A_{j_1},\ldots,A_{j_m}\}\leq\sigma'$.
+\end{proof}
+
+The considerations above give us the following comparison of derivability in our system and the system BCD.
+\begin{theorem} ~
+    \label{theorem:bcd}
+    \begin{enumerate}
+        \item If $\Gamma \vdash_k t : \bar{A}$ then for $i\in\{1,\ldots,\dim(\bar{A})\}$
+             we have $\Gamma_{[i]}\vdash_{\textnormal{BCD}} t : \bar{A}_{[i]}$.
+
+        \item If $\Sigma \vdash_{\textnormal{BCD}} t : \sigma$ where $\sigma = \{A_1,\ldots, A_n\}$
+            then there are $\Gamma,\bar{B}$ with $\dim(\Gamma)=\dim(\bar{B})=n$
+            such that $\Sigma \leq\Gamma_{[i]}$, $\Gamma \vdash_k t : \bar{B}$ for some $k$ and
+                $\{\bar{B}_{[1]},\ldots,\bar{B}_{[n]}\}\leq \sigma$.
+    \end{enumerate}
+\end{theorem}
+\begin{proof}
+    For the proof of (1), we assume $\Gamma \vdash_k t : \bar{A}$, which by Lemma~\ref{lemma:toS} gives us that $\Gamma_{[i]}\vdash_S t:A_{[i]}$ for $i\in\{1,\ldots,\dim(\bar{A})\}$. Then the second statement of Theorem~\ref{theorem:vanBakelS} gives us that $\Gamma_{[i]}\vdash_{BCD} t:\bar{A}_{[i]}$.
+
+    For the proof of (2), we assume that $\Sigma \vdash_{\textnormal{BCD}} t : \sigma$. By the first statement of Theorem~\ref{theorem:vanBakelS}, we obtain an environment $\Sigma'$ such that $\Sigma\leq\Sigma'$ and a type $\sigma' = \{B_1,\ldots, B_{m}\}$ such that
+    $\Sigma' \vdash_S t : B_i$ for all $i\in\{1,\ldots,m\}$ and %
+    $\{B_1,\ldots, B_{m}\}\leq \sigma$ for some $m$ (*). 
+    Note that we may assume that $m=n$. Indeed, when $n<m$ we just introduce more copies of some coordinate $i$, cf.\ Lemma~\ref{lem:weak-dim}(\ref{en:weak-dim-add}).  When $m<n$, we use
+    Proposition~\ref{prop:picking} to obtain some $\tau\subseteq\sigma$ the size of which
+    is not greater that the size of $\sigma'$ and by the inclusion $\tau\subseteq\sigma$ we still
+    have $\Sigma' \vdash_S t : B$  for all $B\in\tau$.
+    %
+    This means that $\Sigma \vdash_{S} t : B_i$ for each  $i\in\{1,\ldots,n\}$. Consider now $\bar{B} = (B_1,\ldots,B_n)$. 
+    We now define a context $\Gamma$ so that $\dom(\Gamma)=\dom(\Sigma)$ 
+    and $(x:\bar{\rho}_x)\in\Gamma$ for
+    $\bar{\rho}_x = (\underbrace{\rho,\ldots,\rho}_{n\mbox{\scriptsize -times}})$
+    where $(x:\rho)\in\Sigma$. Note that $\Gamma_{[i]} = \Sigma$ so Lemma~\ref{lemma:fromvanBakel} gives us that  $\Gamma\vdash_k t:\bar{B}$ for some $k$. 
+    Note that $\{\bar{B}_{[1]},\ldots,\bar{B}_{[n]}\}\leq\sigma$ by (*).
+\end{proof}
+
+
+\newpage
+
+\section{Comparison with the Multiset-dimensional System}
+
+Comparing the presented dimensionally bounded system to the currently most expressive dimensionally bounded system $(\Vdash_k)$ with decidable inhabitation~\cite[Section~3.2]{DudenhefnerR17}, one can observe several differences.
+
+The system $(\Vdash_k)$ introduces non-idempotent intersection types\footnote{The use of non-idempotent intersection types is to measure intersection introduction as a resource, not assumption reuse as in traditional literature (TODO cite).} (having multisets to the left of the arrow) as annotations throughout the derivation.
+This induces additional bookkeeping (see side condition $(\star)$ in rule $(\cap\textnormal{I})$), and the  correspondence to established intersection type systems (both idempotent and non-idempotent) is not immediate.
+
+The most important difference is that the individual dimensions in system $(\Vdash_k)$ are strictly less comprehensive wrt. inhabited terms.
+First, any derivation underlying $\Vdash_k$ can be translated to a derivation in $\vdash_k$.
+
+\begin{lemma}\label{lem:exp_blowup}
+    If $\Gamma_{[1]} \Vdash_k t : A$, then $\Gamma \vdash_k : (A)$.
+\end{lemma}
+
+\begin{proof}
+    Both $\Vdash_k$ and $\vdash_k$ follow derivations $\vdash_S$.
+    Using lexicographic ordering, multisets of cardinality at most $k$ at top-level can be captured by vectors of size at most $k$.
+    Therefore, the same construction as the proof of Lemma~\ref{lemma:fromvanBakel} applies for the translation.    
+\end{proof}
+
+Since rank $2$ normal form typings are captured by linear multiset-dimension~\cite[Proposition~23]{DudenhefnerR17}, we obtain a similar characterization as a corollary.
+
+\begin{definition}[Rank]~\\
+    $\begin{array}{rcl}
+        \rank(A) &::=& 0 \text{ if } A \text{ is a simple type}\\
+        \rank(\sigma \to B) &::=& \max\{\rank(\sigma) + 1, \rank(B)\} \text{ otherwise}\\
+        \rank(\{A_1, \ldots, A_n\}) &::=& \max\{1, \rank(A_1), \ldots, \rank(A_n)\}
+        %\rank(\Sigma) &::=& \max\{ \max\{\rank(A_1) + 1, \ldots, \rank(A_n) + 1\} \mid (x : \{A_1, \ldots, A_n\}) \in \Sigma \}
+    \end{array}$
+\end{definition}
+
+\begin{corollary}[{cf.~\cite[Proposition~23]{DudenhefnerR17}}]
+    \label{cor:rank2}
+    Let $t$ be a term in $\beta$-normal form, let $\bar{A}$ be a vector of length $n$ such that $\rank(\bar{A}_{[i]}) = 2$ for $i \in \{1, \ldots, n\}$, and let $\Gamma$ be an environment such that $\Gamma_{[i]}(x)$ is an intersection of simple types for $i \in \{1, \ldots, n\}$ and $x \in \dom(\Gamma)$.
+    If $\Gamma_{[i]} \vdash_S t : \bar{A}_{[i]}$, then $\Gamma \vdash_n : \bar{A}$.
+\end{corollary}
+
+Second, the following Lemma~\ref{lem:exp_blowup} shows that there are types $A_1, A_2, \ldots$ which are inhabited in dimension $2$, but each $A_i$ requires at least multiset dimension $2^i$ to be assigned to any term. 
+
+\begin{lemma}\label{lem:exp_blowup}
+    There exists a family of types $\{A_1, A_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
+    \begin{enumerate}
+        \item The size (number of nodes in the syntax tree) of $A_n$ is linear in $n$.
+        \item There exists a term $t_n$ such that $\emptyset \vdash_2 t_n : (A_n)$.
+        \item If there exists a term $u_n$ such that $\emptyset \Vdash_k u_n : A_n$, then $k \geq 2^n$.
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+    Let $\sigma_n := \bigcup\limits_{i=1}^n \{ \{a_i, b_i\} \to a_{i+1}, \{a_i, b_i\} \to b_{i+1} \}$,
+    $\tau_n := \{\{a_{n+1}, b_{n+1}\} \to c\}$
+    and $A_n := \{a_0, b_0\} \to \sigma_n \to \tau_n \to c$.
+    \begin{enumerate}
+        \item This property holds by definition.
+        \item Let $v_0 := z$ and $v_{i+1} := y\,v_i$ for $i \in \{0, \ldots, n\}$.
+        Let $t_n := \lambda xyz.z\,v_n$.
+        We have $\emptyset \vdash_2 t_n : (A_n)$.
+        The crucial step is
+            \begin{displaymath}
+       {\RightLabel{\textnormal{($\Rightarrow$E)}}
+         \AxiomC{$\Gamma \vdash_2 y : R((a_i, b_i)) \Rightarrow (a_{i+1}, b_{i+1})$}
+        \AxiomC{$\Gamma \vdash_2 v_i : (a_i, b_i)$}
+        \BinaryInfC{$\Gamma \vdash_2 y\,v_i : (a_{i+1}, b_{i+1})$}
+        \DisplayProof
+  }
+    \end{displaymath}
+    Where $\Gamma = \{x: (\{a_0, b_0\}, \{a_0, b_0\}), y: (\sigma_n, \sigma_n), z: (\tau_n, \tau_n) \}$
+    and $R := \{(1,1), (1,2), (2, 1), (2,2)\}$, observing that $R(\Gamma) = \Gamma$.
+    \item An inhabitant of $A_n$ is necessarily of shape $\lambda xyz.z\,(y \ldots (y\,x) \ldots)$ such that $y$ occurs at least $n$ times and each occurrence of $y$ via the $(\cap\textnormal{I})$ rule doubles the annotation multiset cardinality.\qedhere
+    \end{enumerate}
+    
+\end{proof}
+
+Third, complementarily to the above Lemma~\ref{lem:exp_blowup}, there there is a family terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
+
+\begin{lemma}\label{lem:exp_blowup}
+    There exists a type $A$ and a family of terms $\{t_1, t_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
+    \begin{enumerate}
+        \item The size (number of nodes in the syntax tree) of $t_n$ is linear in $n$.
+        \item $\emptyset \vdash_2 t_n : (A)$.
+        \item If $\emptyset \Vdash_k t_n : A$, then $k \geq 2^n$.
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+    Let $u_0 := x$ and $u_{n+1} := y\,u_n$ for $n \in \mathbb{N}$.
+    Let $t_n := \lambda xyz.z\,u_n$.
+    Let $\sigma := \{\{a, b\} \to a, \{a, b\} \to b\}$.
+    Let $\tau := \{\{a, b\} \to c\}$.
+    Let $A := \{a, b\} \to \sigma \to \tau \to c$.
+    \begin{enumerate}
+        \item This property holds by definition.
+        \item We have $\emptyset \vdash_2 t_n : (A)$.
+        The crucial step for $i \in \mathbb{N}$ is
+            {\begin{displaymath}
+            \RightLabel{\textnormal{($\Rightarrow$E)}}
+            \AxiomC{$\Gamma \vdash_2 y : R((a, b)) \Rightarrow (a, b)$}
+            \AxiomC{$\Gamma \vdash_2 u_i : (a, b)$}
+            \BinaryInfC{$\Gamma \vdash_2 y\,u_i : (a, b)$}
+            \DisplayProof
+            \end{displaymath}}%
+        Where $\Gamma = \{x: (\{a, b\}, \{a, b\}), y: (\sigma, \sigma), z: (\tau, \tau) \}$
+    and $R := \{(1,1), (1,2), (2, 1), (2,2)\}$, observing that $R(\Gamma) = \Gamma$.
+        \item Similarly to the proof of Lemma~\ref{lem:exp_blowup}, each occurrence of $y$ via the $(\cap\textnormal{I})$ rule doubles the annotation multiset cardinality.\qedhere
+    \end{enumerate}
+\end{proof}
+
+Similarly to multiset-dimension the present notion of dimension is not invariant under $\eta$-expansion:
+$\emptyset \vdash_1 \lambda x.x : \{\{a, b\} \to c\} \to \{a, b\} \to c$, but $\emptyset \not\vdash_1 \lambda x y.x\,y : \{\{a, b\} \to c\} \to \{a, b\} \to c$.
+
+The avid reader may wonder: why is the \textsf{EXPSPACE} inhabitation procedure~$\mathcal{A}_{\langle d \rangle}$, which respects a bound $d$ on the multiset dimension, not suited for inhabitation in the system $(\vdash_k)$?
+One immediate answer is given by the construction in the proof of Lemma~\ref{lem:exp_blowup}.
+Iterative intersection introduction strictly increases multiset dimension.
+This is reflected in procedure~$\mathcal{A}_{\langle d \rangle}$ via \emph{multisets of simultaneous constraints} with strictly increasing cardinalities on intersection introduction.
+
+Still, the immediate answer is not satisfactory.
+The construction in the proof of Lemma~\ref{lem:exp_blowup} can easily be accommodated for by identifying identical constraints.
+The modified inhabitation procedure would remain in \textsf{EXPSPACE}.
+
+A key property of procedure~$\mathcal{A}_{\langle d \rangle}$ is that environments in simultaneous constraints are monotone wrt.~pointwise inclusion.
+That is, there is no need to strengthen type assumptions.
+This is different for the system $(\vdash_k)$ for which in rule ($\Rightarrow$E) type assumptions of premises are combined, including the action of a relation $R$.
+Without the monotonicity condition, the \textsf{EXPSPACE} (or, alternating exponential time) argument is not applicable.
+
+Overall, the present notion of dimension resides between the multi-set dimension and set-dimension, while preserving decidable inhabitation.
+
+\newpage
+
+The following example shows more of the data flow management features of the present system.
+It is more than a mere vector presentation of the strict intersection type system.
+
+\begin{example}[Independent, Sequential Intersection Introduction]
+Fix the following:
+\begin{itemize}
+    \item $\sigma_1 := \{f, g\}$
+    \item $A_1 := \{b_1 \to e \to c\}$
+    \item $A_2 := \{b_2 \to e \to d\}$
+    \item $\sigma_2 := \{\{b_1\} \to \{A_1\} \to c, \{b_2\} \to \{A_2\} \to d\}$
+    \item $\tau := \sigma_1 \to \{\sigma_1 \to e\} \to \{\sigma_2 \to a\} \to a$
+    \item $N := \lambda rs.s\,r\,(y\,x)$
+    \item $M := \lambda xyz.z\,N$
+    \item $R := \{(1, 1), (1, 2)\}$
+\end{itemize}
+   A derivation of $\emptyset \vdash_S M : \tau$ in the strict intersection type system contains three occurrences of the intersection introduction rule ($\cap$I) with the following concluding judgments:
+\begin{enumerate}
+    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}\} \vdash_S N : \sigma_3$
+    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}, r : \{b_1\}, s : \{A_1\}\} \vdash_S x : \sigma_1$
+    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}, r : \{b_2\}, s : \{A_2\}\} \vdash_S x : \sigma_1$
+\end{enumerate}
+    Therefore, one may assume that dimension $4$ is necessary for the consecutive intersection introductions.
+    However, we have $\emptyset \vdash_2 M : \tau$.
+    In the system $(\vdash_k)$, there is no reason to keep type assumptions for variables $r$ and $s$ in order to assign a type to ht subterm $(y\,x)$.
+    Without the irrelevant assumptions, the distinct environments are unified.
+    The relation $R$ keeps track of this unification, and we can derive the following two judgments:
+\begin{enumerate}
+    \item[(i)] $\{r : (b_1, b_2), s : (A_1, A_2)\} \vdash_2 s\,r : R((e)) \Rightarrow (c, d)$
+    \item[(ii)] $\{x : (\sigma_1), y : (\sigma_2)\} \vdash_2 y\,x : (e)$
+\end{enumerate}
+    Using the rule ($\Rightarrow$E) we obtain 
+    {\begin{displaymath}
+    \RightLabel{\textnormal{($\Rightarrow$E)}}
+    \AxiomC{$(i)$}
+    \AxiomC{$(ii)$}
+    \BinaryInfC{$\{r : (b_1, b_2), s : (A_1, A_2)\} \cup R(\{x : (\sigma_1), y : (\sigma_2)\}) \vdash_2 s\,r\,(y\,x) : (c, d)$}
+    \DisplayProof
+    \end{displaymath}}%
+    From the above derivation the remainder of the derivation of $\emptyset \vdash_2 M : \tau$ is straightforward.
+\end{example}
+
+
+\newpage
+
+\section*{TODOs}
+
+\begin{itemize}
+    \item (alx) van Bakel System specific relationship to traditional systems (e.g. Coppo-Dezani-Venneri) through sets of strict types
+    \item (alx) All proofs for System with dimensional restriction
+    \item (alx/dud) Detailed proof of decidability of Inhabitation (also complexity) Check with https://ar5iv.labs.arxiv.org/html/1407.7592
+    \item (dud, done) Show that one is strictly less efficient with the dimension than the other
+    \item (dud, done) multiset dimension is a upper bound for the R-dimension
+    \item (dud, done) connection to rank-2 fragment via multiset dimension (as a corollary)
+    \item (dud) explicit lower bound for R-inhabitation (in linear rank) using inhabitation in rank-2
+    \item (alx) write-once machines complexity \url{https://ar5iv.labs.arxiv.org/html/1407.7592}
+    \item strong normalization property
+    \item (dud, done) note on $\eta$-expansion (may increase dimension)
+    \item (dud) relationship between size of sets and size of vectors (is there a top-level subtyping which restricts the size of the sets to dimension)
+    \item picture relating different type systems (van Bankel, BCD, multiset-dim, R-dim, rank 2, set-dim)
+    \item (dud, jr) compare rank-wise complexity of inhabitation in R and mset
+    \item (jr) introduction
+    \item (jr) qualitative comparison between R-dimension and multiset dimension
+    \item (jr, dud) why do the techniques used for inhabitation in multiset-dimension not suffice for a expspace upper bound for inhabitation in R-dimension
+\end{itemize}
+
+\section*{Open Questions}
+\begin{remark}[Open Questions]~
+\begin{itemize}
+\item Relationship to decidability in each finite rank\\
+\url{https://dl.acm.org/doi/10.1145/317636.317788}\\
+\url{https://www.sciencedirect.com/science/article/pii/S1571066105050656}\\
+\url{https://www.sciencedirect.com/science/article/pii/S0304397503005772}
+%Sébastien Carlier and J. B. Wells. Expansion: the crucial mechanism for type inference with intersection types: A survey and explanation. In Proc. 3rd Int'l Workshop Intersection Types & Related Systems (ITRS 2004), pages 173-202, 2005. The ITRS '04 proceedings appears as vol. 136 (2005-07-19) of Elec. Notes in Theoret. Comp. Sci. (PDF)
+%Assaf J. Kfoury and J. B. Wells. Principality and type inference for intersection types using expansion variables. Theoret. Comput. Sci., 311(1-3):1-70, 2004. Supersedes [17]. For omitted proofs, see the longer report [39]. (PDF)
+\item Church-style presentation of the system
+\item Exact complexity of inhabitation wrt. dimension
+\item Relationship of relation R to expansion variables
+\end{itemize}
+\end{remark}
+
+
+\newpage
+
+\bibliography{bibliography}
+
+\appendix
+
+\section{Alternative presentation of the system}
+
+Assuming that $\bar\sigma$ and $\bar\tau$ have the same dimension $n$ we define
+$\bar\sigma\uplus\bar\tau = (\bar\sigma_1\cup\bar\tau_1,\ldots,\bar\sigma_n\cup\bar\tau_n)$.
+Note that for a vector $\bar\tau_\emptyset$ such that $\bar\tau_{\emptyset i}=\emptyset$ for $i=1,\ldots, n$ we have $\bar\sigma\uplus\bar\tau_\emptyset = \bar\sigma$.
+
+Assuming that $\Gamma$ and $\Delta$ have the same dimension, we define $\Gamma\uplus\Delta$ as follows
+\[
+\begin{array}{lcl}
+ \Gamma\uplus\Delta 
+ &=& 
+    \{ x: \bar\sigma\uplus\bar\tau \mid x:\bar\sigma\in\Gamma, x:\bar\tau\in\Delta\} \cup\\
+ & & \{ x: \bar\sigma \mid x:\bar\sigma\in\Gamma, x\not\in\dom(\Delta)\}\cup\\
+ & & \{ x: \bar\tau \mid x:\bar\tau\in\Delta, x\not\in\dom(\Gamma)\}
+\end{array}
+ \]
+
+\begin{minipage}{\textwidth}
+\centering
+\begin{tabular}{l}
+  {
+  \RightLabel{\textnormal{(Ax)}}
+  \AxiomC{
+  \parbox{5cm}{
+  $A_i\in \sigma_i$ for all $i=1...m$\\
+  with $\bar{A} = (A_1,\ldots,A_m)$\\
+  $\bar{\sigma} = (\sigma_1,\ldots,\sigma_m)$
+  }}
+  \UnaryInfC{$\Gamma, x : \bar{\sigma}  \vdash x : \bar{A}$}
+  \DisplayProof
+  } \quad
+%
+  {
+  \RightLabel{\textnormal{($\omega$)}}
+  \AxiomC{$\dim(\Gamma)=0$ \textbf{???}}
+  \UnaryInfC{$\Gamma \vdash t : ()$}
+  \DisplayProof
+  }\\\\
+%
+%
+  {
+  \RightLabel{\textnormal{($\Rightarrow$I)}}
+  \AxiomC{%
+  \parbox{5cm}{
+  $\Gamma_i, x: \sigma_i \vdash t : A_i$ for $i=1...m$\\
+  with $\bar{A} = (A_1,\ldots,A_m)$\\
+  $\bar{\sigma} = (\sigma_1,\ldots,\sigma_m)$\\
+  $\Gamma_i =\{ y:\tau_i \mid y:\bar\tau \in\Gamma\}$ }
+  }
+  \UnaryInfC{$\Gamma \vdash \lambda x.t : \bar{\sigma} \Rightarrow \bar{A}$}
+  \DisplayProof
+  }\quad
+%
+  {
+  \RightLabel{\textnormal{($\Rightarrow$E)}}
+  \AxiomC{$\Gamma \vdash t : R(\bar{A}) \Rightarrow \bar{B}$}
+  \AxiomC{$\Delta \vdash u : \bar{A}$}
+  \BinaryInfC{$\Gamma \uplus R(\Delta) \vdash t \; u : \bar{B}$}
+  \DisplayProof
+  }
+\end{tabular}
+\end{minipage}
+
+
+
+\section{Nice example}
+
+Assume that $C = a\to a$. We use the relation $R = \{(1,1)\}$ in the
+($\Rightarrow$E) rule below.
+
+\[
+  \begin{gathered}
+    \RightLabel{\scriptsize (Ax)}
+    \AxiomC{$C\to C \in \{C\to C, C\}$}
+    \UnaryInfC{$x:\{C\to C, C\} \vdash x : (C\to C)$}
+    \RightLabel{\scriptsize (Ax)}
+    \AxiomC{$C \in \{C\to C, C\}$}
+    \UnaryInfC{$x:\{C\to C, C\} \vdash x : (C)$}
+    \RightLabel{\scriptsize ($\Rightarrow$E)}
+    \BinaryInfC{$x : \{C\to C, C\} \vdash xx : C$}
+    \RightLabel{\scriptsize ($\Rightarrow$I)}
+    \UnaryInfC{$\vdash \lambda x.xx : (\{C\to C, C\} \to C)$}
+    \DisplayProof
+\end{gathered}
+\]
+
+We now apply this function to the identity as follows, with $R =
+\{(1,1),(2,1)\}$
+in the ($\Rightarrow$E) rule below.
+
+\[
+\AxiomC{$\vdash \lambda x.xx : (\{C, a\} \to a)$}
+\AxiomC{$y:C\in\{y:C\}$}
+\UnaryInfC{$y:C\vdash y : C$}
+\AxiomC{$y:a\in\{y:a\}$}
+\UnaryInfC{$y:a\vdash y : a$}
+\RightLabel{\scriptsize ($\Rightarrow$I)}
+\BinaryInfC{$ \vdash \lambda y.y : (C\to C,C)$}
+\RightLabel{\scriptsize ($\Rightarrow$E)}
+\BinaryInfC{$\vdash (\lambda x.xx)\,I:(C)$}
+\DisplayProof
+\]
+
+
+\section{Tensor stuff}
+
+We define tensor operations as follows:
+
+Assume that $\bar{A} = (A_1,\ldots,A_n)$ and $\bar{B} =
+  (B_1,\ldots,B_m)$, then $\bar{A}\otimes\bar{B} = (A_1,\ldots,A_n, B_1,\ldots,B_m)$.
+
+Assume that $\bar{\sigma} = (\sigma_1,\ldots,\sigma_n)$ and $\bar{\tau} = (\tau_1,\ldots,\tau_m)$, then $\bar{\sigma}\otimes\bar{\tau} = (\sigma_1,\ldots,\sigma_n,\tau_1,\ldots,\tau_m)$.
+
+Assume that $\Gamma = \{ x_1:\bar\sigma^1, \ldots, x_k:\bar\sigma^k\}$, and
+  $\Delta = \{ x_1:\bar\tau^1, \ldots, x_k:\bar\tau^k\}$, then
+  $\Gamma\otimes\Delta = \{ x_1:\bar\sigma^1\otimes\bar\tau^1, \ldots, x_k:\bar\sigma^k\otimes\bar\tau^k\}$. Note that $\Gamma\otimes\Delta$ is defined only when $\dom(\Gamma)=\dom(\Delta)$.
+
+Assume that $R\subseteq \bar{n}\times\bar{m}$ and $S\subseteq \bar{k}\times\bar{l}$
+then we define $R\otimes S$ as $R\cup {\uparrow_n^m}\! S$ where ${\uparrow_n^m}\! S = \{ (i,j) \mid (i-n,j-m)\in S\}$.
+
+\begin{proposition}[basic facts on $\uplus$] ~
+\begin{enumerate}
+    \item $R(\Gamma\uplus\Delta) = R(\Gamma)\uplus R(\Delta)$ for each contexts $\Gamma,\Delta$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+    The proof of (1) we observe first that for $x\in\dom(\Gamma)-\dom(\Delta)$ we have $x:\bar{\sigma}\in\Gamma$ and $x:\bar{\sigma}\in\Gamma\uplus\Delta$. Consequently, $x:R(\bar{\sigma})\in R(\Gamma)$ and $x:R(\bar{\sigma})\in R(\Gamma\uplus\Delta)$ as well as $x:R(\bar{\sigma})\in R(\Gamma)\uplus R(\Delta)$. Similarly for $x\in\dom(\Delta)-\dom(\Gamma)$,
+    and $x:\bar{\sigma}\in\Delta$, we get that
+    $x:R(\bar{\sigma})\in R(\Delta)$ and $x:R(\bar{\sigma})\in R(\Gamma\uplus\Delta)$ as well as $x:R(\bar{\sigma})\in R(\Gamma)\uplus R(\Delta)$. For $x\in\dom(\Gamma)\cap\dom(\Delta)$, we have $x:\bar{\sigma}\in\Gamma$ and $x:\bar{\tau}\in\Delta$. Then $x:R(\bar{\sigma})\in R(\Gamma)$ and $x:R(\bar{\tau})\in R(\Delta)$ as well as $x:R(\bar\sigma)\uplus R(\bar\tau)\in R(\Gamma)\uplus R(\Delta)$. Observe now, that $R(\bar{\sigma}\uplus\bar{\tau})_{[i]} = \bigcup\{ \bar{\sigma}_{[j]}\cup\bar{\tau}_{[j]} \mid j\, R\, i \} = \bigcup\{ \bar{\sigma}_{[j]} \mid j\, R\, i \} \cup \bigcup\{ \bar{\tau}_{[j]} \mid j\, R\, i \} = R(\bar{\sigma})_{[i]}\cup R(\bar{\tau})_{[i]}$.
+    Consequently, $R(\bar{\sigma}\uplus\bar{\tau}) = R(\bar{\sigma})\uplus R(\bar{\tau})$
+    and $x:R(\bar\sigma)\uplus R(\bar\tau) = x:R(\bar\sigma \uplus\bar\tau)\in R(\Gamma\uplus\Delta)$.
+\end{proof}
+
+\begin{proposition}[basic facts on $\otimes$] ~
+\begin{enumerate}
+    \item If $\Gamma\otimes\Delta$ is well defined and $x\in\dom(\Gamma)$ then $x\in\dom(\Gamma\otimes\Delta)$.
+    \item $(\Gamma\uplus\Delta)\otimes(\Gamma'\uplus\Delta') = 
+    (\Gamma\otimes\Gamma')\uplus(\Delta\otimes\Delta')$ ?
+    \item $R(\Gamma)\otimes S(\Delta) = R\otimes S(\Gamma\otimes\Delta)$ ?
+\end{enumerate}
+\end{proposition}
+
+\begin{lemma}[tensor lemma] \label{lemma:tensor}
+  If $\Gamma \vdash t : \bar{A}$ and
+  $\Delta \vdash t : \bar{B}$ %
+  then $\Gamma\otimes\Delta \vdash t:\bar{A}\otimes\bar{B}$.
+\end{lemma}
+\begin{proof}
+    Induction over the term $t$.
+
+    In case $t = x$ we must have $x\in\dom(\Gamma)=\dom(\Delta)=\dom(\Gamma\otimes\Delta)$ and
+    $\Gamma \vdash t : \bar{A}$ (1) and
+    $\Delta \vdash t : \bar{B}$ (2) are derived either by the (Ax) rule or by the ($\omega$) rule. In case (1) is by the ($\omega$) rule we see that  $\Gamma\otimes\Delta \vdash t:\bar{A}\otimes\bar{B}$ is actually  $\Delta \vdash t:\bar{B}$ so the conclusion follows
+    by (2). Similarly, when (2) is by the ($\omega$) rule we see that  $\Gamma\otimes\Delta \vdash t:\bar{A}\otimes\bar{B}$ is actually  $\Gamma \vdash t:\bar{A}$ so the conclusion follows by (1). In case both derivations are by the (Ax) rule, we derive
+    $\Gamma\otimes\Delta \vdash t : \bar{A}\otimes\bar{B}$ by the (Ax) rule using derivation (1) to substantiate it for indices $1,\ldots,n$ and derivation (2) for indices $n+1,\ldots,n+m$.
+
+    In case $t=vw$, we have derivation for $\Gamma \vdash t : \bar{A}$ that ends with 
+    \textbf{(inversion lemma?)} the ($\Rightarrow E$) rule. Consequently there is a relation $R$ such that $\Gamma'\vdash v : R(\bar{A'})\Rightarrow\bar{A}$ and
+    $\Delta'\vdash w : \bar{A'}$ such that $\Gamma = \Gamma'\uplus R(\Delta')$
+    Similarly for $\Delta \vdash t : \bar{B}$, there is a relation $S$ such that
+    $\Gamma''\vdash v : S(\bar{A''})\Rightarrow\bar{B}$ and
+    $\Delta''\vdash w : \bar{A''}$ such that $\Delta = \Gamma''\uplus S(\Delta'')$.
+    We obtain by the induction hypothesis that 
+    $$
+    \Gamma'\otimes\Gamma''\vdash v : R\otimes S(\bar{A'}\otimes\bar{A''})\Rightarrow \bar{A}\otimes\bar{B}
+    $$
+    and that $\Delta'\otimes\Delta''\vdash w : \bar{A'}\otimes \bar{A''}$. Then the ($\Rightarrow E$) rule implies that
+    $\Gamma'\otimes\Gamma''\uplus R\otimes S(\Delta'\otimes\Delta'')\vdash vw : \bar{A}\otimes\bar{B}$, which is
+    exactly $\Gamma\otimes\Delta\vdash vw:\bar{A}\otimes\bar{B}$ \textbf{why $\Gamma\otimes\Delta = (\Gamma'\uplus R(\Delta'))\otimes (\Gamma''\uplus S(\Delta'')) $?}
+
+    In case $t=\lambda x.u$ ... TODO
+    \end{proof}
+
+
+\begin{lemma}[relation lemma] \label{lemma:relation}
+  ~\\
+  For each relation $R$,
+  if $\Gamma \vdash t : \bar{A}$ %
+  then $R(\Gamma)\vdash t:\bar{B}$ for each $\bar{B}$ such that
+  $\bar{B}_{[i]} \in (R(\bar{A}))_{[i]}$ for each $i$.
+\end{lemma}
+\begin{proof}
+    Induction over the term $t$.
+
+    In case $t = x$ we deduce from $\Gamma \vdash t : \bar{A}$ that $x:\bar{\sigma}\in\Gamma$ and that each $\bar{A}_{[i]}\in\bar\sigma_{[i]}$ (*). Consider any $\bar{B}_{[i]}\in(R(\bar{A}))_{[i]}$. Since $(R(\bar{A}))_{[i]} = \{ \bar{A}_{[j]} \mid j\, R \,i \}$, we know that $\bar{B}_{[i]} = \bar{A}_{[j]}$ for some $j$ such that $j\, R \,i$. By (*) we know that  $\bar{A}_{[j]}\in\bar\sigma_{[j]}$. Consequently, $\bar{A}_{[j]}\in\bigcup\{\sigma_{[j]} \mid j\, R\, i\} =(R(\bar\sigma))_{[i]}$. So $R(\Gamma)\vdash t:\bar{B}$ holds.
+
+    In case $t = uv$, consider any $\bar{B}$ such that $\bar{B}_{[i]} \in (R(\bar{A}))_{[i]}$ for each $i$. We show subsequently that $R(\Gamma)\vdash t:\bar{B}$. 
+    %
+    The last rule used to obtain $\Gamma \vdash uv : \bar{A}$ is the ($\Rightarrow$E) rule. Consequently, there is a relation $S$ such that $\Gamma = \Gamma_0\uplus S(\Delta)$ and $\Gamma_0\vdash u:S(\bar{C})\Rightarrow \bar{A}$ as well as $\Delta\vdash v:\bar{C}$ for some $\bar{C}$.
+    %
+    We obtain by the induction hypothesis that $R(\Gamma_0)\vdash u: \bar{D}$ for each
+    $\bar{D}$  such that $\bar{D}_{[i]}\in (R(S(\bar{C})\Rightarrow \bar{A}))_{[i]}$.
+
+    As $(R(S(\bar{C})\Rightarrow \bar{B}))_{[i]} = \{ (S(\bar{C}))_{[j]}\to \bar{B}_{[j]} \mid j\, R\, i\}$
+    we get that $\bar{D}_{[i]} = (S(\bar{C}))_{[j_i]}\to \bar{B}_{[j_i]}$ for some $j_i$ such that $j_i\, R\, i$. Therefore, we can define a relation $R' = \{ (j_i, i) \mid j_i\, R\, i\}$. Observe now, that $D_{[i]} = R'(S(\bar{C})) \Rightarrow R'(\bar{B})$ (note that we silently treat ${X}$ as $X$ here). We can now apply the  ($\Rightarrow$E) rule as
+
+    \begin{displaymath}
+       {\RightLabel{\textnormal{($\Rightarrow$E)}}
+         \AxiomC{$R(\Gamma_0) \vdash t : R'(S(\bar{C})) \Rightarrow R'(\bar{A})$}
+        \AxiomC{$\Delta \vdash u : \bar{C}$}
+        \BinaryInfC{$R(\Gamma_0) \uplus R'(S(\Delta)) \vdash t \; u : R'(\bar{A})$}
+        \DisplayProof
+  }
+    \end{displaymath}
+
+    By weakening lemma (TODO) we obtain $R(\Gamma_0) \uplus R(S(\Delta)) \vdash t \; u : R'(\bar{A})$.
+
+    In case $t = \lambda x.u$, we observe that $\Gamma\vdash t:\bar{A}$ can be obtained by ($\Rightarrow$ I) rule only so $\Gamma,x:\bar{\sigma}\vdash u:\bar{B}$ and
+    $\bar{A} = \bar{\sigma}\Rightarrow\bar{B}$.
+    % 
+    Consider now $\bar{C}$ such that $\bar{C}_{[i]} \in R(\sigma\Rightarrow\bar{A})_{[i]} = \{ \bar\sigma_{[j]}\to\bar{A}_{[j]} \mid j\, R\, i \}$. 
+    We can now define a relation $R'$ as $\{ (j, i) \mid j\, R\, i \mbox{ and } \sigma_{[j]}\to\bar{A}_{[j]}=\bar{C}_{[i]}\}$. 
+    Since $\Gamma,x:\bar{\sigma}\vdash u: \bar{B}$, we
+    obtain by the induction hypothesis that
+    \begin{displaymath}
+        R'(\Gamma),x:R'\bar{(\sigma)}\vdash u: R'(\bar{A})
+    \end{displaymath}
+    From that, we obtain  by the ($\Rightarrow$ I) rule that $R'(\Gamma)\vdash t: R'(\bar\sigma) \Rightarrow R'(\bar{A})$ and then by the weakening 
+    $R(\Gamma)\vdash t: \bar{C}$.
+\end{proof}
+
+
+
+\begin{lemma}[substitution lemma]
+  ~\\
+  If $\Gamma_{[i]}, x:\bar\sigma_{[i]}\vdash t : \bar{B}_{[i]}$ %
+  for $i=1,\ldots,m$ and $R$ is such that $\sigma_{[i]} = \{\bar{A}_{[j]} \mid j\, R\, i\}$
+  and $\Delta\vdash u : \bar{A}$ %
+  then $\Gamma\uplus R(\Delta) \vdash t[x:=u] : \bar{B}$.
+  
+\end{lemma}
+\begin{proof}
+  Induction over $t$.
+
+  \begin{itemize}
+  \item For $t=y$ we consider two subcases depending on $y$.
+    \begin{itemize}
+    \item If $y=x$, we show that $\Gamma\uplus R(\Delta)\vdash u :\bar B$. 
+        Observe that derivability of $\Gamma_{[i]}, x:\bar\sigma_{[i]}\vdash t : \bar{B}_{[i]}$
+        implies that each $\bar{B}_{[i]}\in\bar\sigma_{[i]}$. However, we know that $\sigma_{[i]} = \{A_{[j]} \mid j\, R\, i\}$. By Lemma~\ref{lemma:relation}, this means that ???
+    
+    -- due to $R$ we can extract from the derivation for
+      $u$ all the necessary derivations for $B$'s
+    \item If $y\not=x$ we observe that derivability for $t$ implies that there is a declaration $y:\bar\rho$  in $\Gamma$ such that $\bar{B}_{[i]}\in\bar\rho_{[i]}$,
+    consequently there is a declaration $y:\bar\rho\uplus\bar\rho'$ in $\Gamma\uplus R(\Delta)$.
+    Obviously, each $B_{[i]}\in\bar\rho_{[i]}\cup\bar{\rho}'_{[i]}$.
+    \end{itemize}
+  \item $t=vw$ -- we have in the last derivation rule a relation
+    $R'$. For the derivation of $w$ we need to adapt $R$ to take into
+    account $R'$. This should be $R;R'^{-1}$.
+  \item $t=\lambda y.u$ -- congruence.
+  \end{itemize}
+\end{proof}
+
+
+\end{document}
