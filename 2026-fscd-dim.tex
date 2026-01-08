@@ -21,7 +21,7 @@
 %for section-numbered lemmas etc., use "numberwithinsect"
 %for enabling cleveref support, use "cleveref"
 %for enabling autoref support, use "autoref"
-%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for anonymizing the authors (e.g. for double-blind review), add "anonymous"
 %for enabling thm-restate support, use "thm-restate"
 %for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
 %for producing a PDF according the PDF/A standard, add "pdfa"
@@ -307,7 +307,7 @@ It also illustrates that the occurrence of sets of types in derivations does not
 
 \medskip
 
-\AxiomC{$\{x : (\{\{a\} \to b\})\} \vdash_1 x : R(a) \Rightarrow (b)$}
+\AxiomC{$\{x : (\{\{a\} \to b\})\} \vdash_1 x : R((a)) \Rightarrow (b)$}
 \AxiomC{$\{x : (\{a\})\} \vdash_1 x : (a)$}
 \BinaryInfC{$\{ x : (\{a, \{a\} \to b\})\} \vdash_1 x\,x : (b)$}
 \UnaryInfC{$\emptyset \vdash_1 \lambda x.x\,x : (\{a, \{a\} \to b\} \to b)$}
@@ -318,7 +318,7 @@ It also illustrates that the occurrence of sets of types in derivations does not
 Let 
 \begin{itemize}
 \item $\Gamma_1 = \{x : (\{b, c\} \to a)\}$
-\item $\Gamma_2 = \{y : (a \to b, a \to c), z : (a, a)\}$
+\item $\Gamma_2 = \{y : (\{a\} \to b, \{a\} \to c), z : (a, a)\}$
 \item $R_1 = \{(1,1), (2,1)\}$
 \item $R_2 = \{(1,1), (1,2)\}$
 \end{itemize}
@@ -326,7 +326,7 @@ We have the following derivation
 
 
 \AxiomC{$\Gamma_1 \vdash x : R_1(b, c) \Rightarrow (a)$}
-\AxiomC{$\{y : (a \to b, a \to c)\} \vdash y : R_2(a) \Rightarrow (b, c)$}
+\AxiomC{$\{y : (\{a\} \to b, \{a\} \to c)\} \vdash y : R_2(a) \Rightarrow (b, c)$}
 \AxiomC{$\{z : (a)\} \vdash z : (a)$}
 \BinaryInfC{$\Gamma_2 \vdash y\,z : (b, c)$}
 \BinaryInfC{$\Gamma_1 \cup R_1(\Gamma_2) \vdash x\,(y\,z) : (a)$}
@@ -388,7 +388,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
 \end{enumerate}
 \end{lemma}
 \begin{proof}
-    In both cases the proof is by a straightforward induction  over $t$.
+    In both cases the proof is by a straightforward induction on $t$.
 \end{proof}
 
 \begin{lemma}\label{lem:lam_inversion}
@@ -753,7 +753,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
         Observe that $\Gamma'(x)\cup R(\Delta)(x)\rbar{\subseteq} \Gamma(x)$
         for $x\in\dom(\Gamma)$ and consequently $(R(\Delta)(x))_{[i]}\subseteq(\Gamma(x))_{[i]}$.
         This implies that $(\Delta(x))_{[j]}\subseteq(\Gamma(x))_{[i]}$ for $j\in\mathcal{I}_i$.
-        We can now apply weakening lemma to derivations in (\ref{eq:bardownstairs})
+        We can now apply the weakening lemma to derivations in (\ref{eq:bardownstairs})
         and obtain %
         %
         $\Gamma_{[i]}\vdash_S v:\bar{B}_{[j]}$ for $j\in\mathcal{I}_i$ as well as
@@ -814,7 +814,7 @@ which is present in \cite{Bakel92}. This condition is trivially fulfilled as our
     there is $\tau\subseteq\sigma$ such that $|\tau|\leq  |\sigma'|$ and $\tau\leq\sigma'$
 \end{proposition}
 \begin{proof}
-    For the proof we use an observation made by Hindley, cf. \cite[Lemma~3(i)]{Hindley82}, which also follows by easy induction from the work of Barendregt, Coppo, Dezani{-}Ciancaglini \cite[Lemma 2.4(ii)]{BarendregtCD83}.
+    For the proof we use an observation made by Hindley, cf. \cite[Lemma~3(i)]{Hindley82}, which also follows by easy induction from the work of Barendregt, Coppo, Dezani-Ciancaglini \cite[Lemma 2.4(ii)]{BarendregtCD83}.
     \begin{quote}
         If $\{A_1,\ldots,A_n\}\leq \{B_1,\ldots,B_m\}$ then for each $i\in\{1,\ldots,m\}$ there is $j\in\{1,\ldots,n\}$ such that $A_j\leq B_i$.
     \end{quote}
