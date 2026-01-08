@@ -129,12 +129,11 @@ Each environment $\Gamma$ is equipped with its dimension $\dim(\Gamma)$. In part
 
 We may extend an environment $\Gamma$ by an additional assumption $x : \bar{\sigma}$, written $\Gamma, x : \bar{\sigma}$, where $\dim(\bar{\sigma}) = \dim(\Gamma)$ and $x$ does not appear in any assumption in $\Gamma$.
 The \emph{domain} of an environment $\Gamma$ is given by $\dom(\Gamma) = \{ x \mid (x : \bar{\sigma}) \in \Gamma \text{ and } \bar{\sigma} \neq   (\emptyset, \ldots, \emptyset)\}$.
-We identify $\Gamma$ and $\Gamma, x : (\emptyset, \ldots, \emptyset)$. 
 When $(x:\bar{\sigma})\in\Gamma$ we write $\Gamma(x)$ for $\bar{\sigma}$.
+We identify $\Gamma$ and $\Gamma, x : (\emptyset, \ldots, \emptyset)$, that is $\Gamma(y) = (\emptyset, \ldots, \emptyset)$ iff $y \not\in \dom(\Gamma)$ for any term variable $y$.
 We write $\Gamma_{[i]}$ for $\{ x:\bar{\sigma}_{[i]} \mid x:\bar{\sigma}\in\Gamma\}$.
-We extend the relation $\rbar{\subseteq}$ to environments of the same dimension so that $\Gamma \rbar{\subseteq} \Delta$ when for each $x \in \dom(\Gamma)$ we have $\Gamma(x) \rbar{\subseteq} \Delta(x)$. We define $\Gamma_1\cup\Gamma_2$ to be the environment $\Delta$ the domain of which is $\dom(\Gamma_1)\cup\dom(\Gamma_2)$ such that for $x\in\dom(\Gamma_i)-\dom(\Gamma_{3-i})$
-we have $\Delta(x) = \Gamma_i(x)$ where $i=1,2$ and for $x\in\dom(\Gamma_1)\cap\dom(\Gamma_2)$
-we have $\Delta(x)_{[j]} = (\Gamma_1)_{[j]}\cup(\Gamma_2)_{[j]}$ for $j\in\{1,\ldots,\dim(\Gamma_1)\}$.
+We extend the relation $\rbar{\subseteq}$ to environments of the same dimension so that $\Gamma \rbar{\subseteq} \Delta$ when for each $x \in \dom(\Gamma)$ we have $\Gamma(x) \rbar{\subseteq} \Delta(x)$.
+If $\dim(\Gamma_1) = \dim(\Gamma_2)$, we define $\Gamma_1\cup\Gamma_2$ to be the environment $\Delta$ the domain of which is $\dom(\Gamma_1)\cup\dom(\Gamma_2)$ such that $\Delta(x)_{[i]} = \Gamma_1(x)_{[i]} \cup \Gamma_2(x)_{[i]}$ for $i\in\{1,\ldots,\dim(\Gamma_1)\}$.
 
 \begin{lemma}[Properties of Type Environments]
 \label{lem:env-properties}~
@@ -165,12 +164,12 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you
 \begin{lemma}[Properties of Type Vector Transformations]
 \label{lem:rel-properties}~
 \begin{enumerate}
-    \item For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \subseteq R'(\bar{\sigma})$.
+    \item For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{\sigma})$.
     \item If $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$ and $R$ is left-total, then there exists $R''$ such that $R''(\bar{A}) = \bar{\sigma}$.
     \item If $\bar{A}$ has distinct coordinates, $R''(\bar{A}) = \bar{\sigma}$, $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$, and $R$ is left-total, then $R \circ R'' \subseteq R'$.
     \item $R(\Gamma) \cup (R\circ R'(\Delta)) = R(\Gamma \cup R'(\Delta))$
-    \item If $R$ is right-unique and  $\bar{A}_{[i]} \in \sigma_{[i]}$ for each $i\in\{1,\ldots, \dim(\sigma)\}$ then
-        $(R(\bar{A})\!\!\downarrow)_{[j]}\in R(\sigma)_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$.
+    \item If $R$ is right-unique and  $\bar{A}_{[i]} \in \bar{\sigma}_{[i]}$ for each $i\in\{1,\ldots, \dim(\bar{\sigma})\}$ then
+        $(R(\bar{A})\!\!\downarrow)_{[j]}\in R(\bar{\sigma})_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$.
     \item If $R$ is right-unique, then $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
     \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}' \rbar{\supseteq} \bar{\sigma}$ such that $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$ and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
 \end{enumerate}
@@ -183,13 +182,13 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you
             We have $R''(\bar{A})_{[j]} = \{ \bar{A}_{[i]} \mid i\, R''\, j \} = \{ \bar{A}_{[i]} \mid  \exists k.i\, R'\, k \mbox{ and } j\, R\, k \mbox{ and } \bar{A}_{[i]}\in\bar\sigma_{[j]}\}$.
             This set is included in $\bar\sigma_{[j]}$ as for each its element $\bar{A}_{[i]}$ we have
             $\bar{A}_{[i]}\in\bar\sigma_{[j]}$. Similarly, $\bar\sigma_{[j]}\subseteq R(\bar\sigma)_{[k]}$ for some $k$ as $R$ is left-total. As $R(\bar\sigma)_{[k]}\subseteq R'(\bar{A})_{[k]}$, each element of $\bar{\sigma}_{[j]}$ must be equal to some $\bar{A}_{[i]}$ such that $i\, R'\, k$.
-        \item We have $(R \circ R'')(\bar{A}) = R(\bar{\sigma}) \subseteq R'(\bar{A})$.
+        \item We have $(R \circ R'')(\bar{A}) = R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$.
         Since $\bar{A}$ has distinct coordinates, we obtain the claim.     
         \item Obvious. (?)
         \item Obvious. (?)
-        \item Since $R$ is right-unique, we have $R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow_{[i]}\, = \bar{\sigma}_{[j]}\to\bar{A}_{[j]}$ where  $j\, R\, i$. 
+        \item Since $R$ is right-unique, we have $(R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow)_{[i]}\, = \bar{\sigma}_{[j]}\to\bar{A}_{[j]}$ where  $j\, R\, i$. 
         Similarly, $R(\bar{\sigma})_{[i]} =  \bar{\sigma}_{[j]}$ and %
-        $R(\bar{A})\!\!\downarrow_{[i]} = \bar{A}_{[j]}$ where  $j\, R\, i$. Consequently, we obtain $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
+        $(R(\bar{A})\!\!\downarrow)_{[i]} = \bar{A}_{[j]}$ where  $j\, R\, i$. Consequently, we obtain $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
         \item Since $R$ is left-total, for all $i \in \{1, \ldots, \dim(\bar{\sigma})\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $i\,R\,j$, for which we set $\bar{\sigma}'_{[i]} := \bar{\tau}_{[j]}$, satisfying the required properties.
     \end{enumerate}
 \end{proof}
@@ -552,7 +551,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \
     \begin{description}
     %
     \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
-    Therefore, we have $(R(\bar{A}))\!\!\downarrow_{[j]}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
+    Therefore, we have ${(R(\bar{A})\!\!\downarrow)_{[j]}}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
     \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
     %
     $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})\!\!\downarrow$.
@@ -624,7 +623,7 @@ Use Lemma~\ref{lem:transform} to collapse redundant entries and idempotence of i
 
 \section{Relation to Traditional Intersection Type Systems}
 
-As a technical tool to establish relation with the traditional intersection type systems, we use the strict system of van Bakel \cite[Section~5]{Bakel04,Bakel11}. This serves us to establish relation with the system of Barendregt, Coppo, Dezani{-}Ciancaglini \cite{BarendregtCD83}, which is expressed in Theorem~\ref{theorem:bcd} below.
+As a technical tool to establish relation with the traditional intersection type systems, we use the strict system of van Bakel \cite[Section~5]{Bakel04,Bakel11}. This serves us to establish relation with the system of Barendregt, Coppo, Dezani-Ciancaglini \cite{BarendregtCD83}, which is expressed in Theorem~\ref{theorem:bcd} below.
 
 
 \begin{definition}[Strict Intersection Type System~{\cite[Definition~5.1]{Bakel11}}]
@@ -725,7 +724,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
 \begin{proof}
     The proof is by induction over the structure of $t$. Assume the notation of the lemma formulation.
     \begin{description}
-        \item[Case $t=x$.] If $\Gamma\vdash x:\bar{A}$ then it can be derived only by (Ax) rule. Consequently, there is a declaration $x:\bar{\sigma}\in\Gamma$ such that for $i\in\{1,\ldots, n\}$ we have $\bar{A}_{[i]}\rbar{\in}\bar{\sigma}_{[i]}$. Consequently, we can use ($\cap$E) rule to obtain $\Gamma_{[i]}\vdash_S x:\bar{A}_{[i]}$ for $i\in\{1,\ldots, n\}$.
+        \item[Case $t=x$.] If $\Gamma\vdash x:\bar{A}$ then it can be derived only by (Ax) rule. Consequently, there is $(x:\bar{\sigma}) \in\Gamma$ such that $\bar{A} \rbar{\in} \bar{\sigma}$. Consequently, we can use ($\cap$E) rule to obtain $\Gamma_{[i]}\vdash_S x:\bar{A}_{[i]}$ for $i\in\{1,\ldots, n\}$.
         %
         \item[Case $t=\lambda x.u$.] The judgment $\Gamma\vdash \lambda x.u:\bar{A}$ can be derived only by ($\Rightarrow$I) rule and thus $\bar{A}=\bar{\sigma}\Rightarrow\bar{B}$ for some $\bar{\sigma}$ and $\bar{B}$ and also $\Gamma,x:\bar{\sigma}\vdash u:\bar{B}$
         is derivable. By the induction hypothesis, we obtain that for each $i\in\{1,\ldots, n\}$ derivable is $\Gamma_{[i]},x:\bar{\sigma}_{[i]}\vdash_S u:\bar{B}_{[i]}$. Then rule ($\to$I) gives
@@ -748,7 +747,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
                  & \mbox{ for } j\in\{1,\ldots,\dim(\bar{B})\}
             \end{array}
         \end{equation}
-        For each $i\in\{1,\ldots,n\}$ we consider indexes  
+        For each $i\in\{1,\ldots,n\}$ we consider indices  
         $\mathcal{I}_i = \{ p \mid (p,i)\in R\}$. %
         %
         Observe that $\Gamma'(x)\cup R(\Delta)(x)\rbar{\subseteq} \Gamma(x)$
@@ -837,14 +836,14 @@ The considerations above give us the following comparison of derivability in our
     \end{enumerate}
 \end{theorem}
 \begin{proof}
-    For the proof of (1), we assume $\Gamma \vdash_k t : \bar{A}$, which by Lemma~\ref{lemma:toS} gives us that $\Gamma_{[i]}\vdash_S t:A_{[i]}$ for $i\in\{1,\ldots,\dim(\bar{A})\}$. Then the second statement of Theorem~\ref{theorem:vanBakelS} gives us that $\Gamma_{[i]}\vdash_{BCD} t:\bar{A}_{[i]}$.
+    For the proof of (1), we assume $\Gamma \vdash_k t : \bar{A}$, which by Lemma~\ref{lemma:toS} gives us that $\Gamma_{[i]}\vdash_S t : \bar{A}_{[i]}$ for $i\in\{1,\ldots,\dim(\bar{A})\}$. Then the second statement of Theorem~\ref{theorem:vanBakelS} gives us that $\Gamma_{[i]}\vdash_{BCD} t:\bar{A}_{[i]}$.
 
     For the proof of (2), we assume that $\Sigma \vdash_{\textnormal{BCD}} t : \sigma$. By the first statement of Theorem~\ref{theorem:vanBakelS}, we obtain an environment $\Sigma'$ such that $\Sigma\leq\Sigma'$ and a type $\sigma' = \{B_1,\ldots, B_{m}\}$ such that
     $\Sigma' \vdash_S t : B_i$ for all $i\in\{1,\ldots,m\}$ and %
     $\{B_1,\ldots, B_{m}\}\leq \sigma$ for some $m$ (*). 
     Note that we may assume that $m=n$. Indeed, when $n<m$ we just introduce more copies of some coordinate $i$, cf.\ Lemma~\ref{lem:weak-dim}(\ref{en:weak-dim-add}).  When $m<n$, we use
     Proposition~\ref{prop:picking} to obtain some $\tau\subseteq\sigma$ the size of which
-    is not greater that the size of $\sigma'$ and by the inclusion $\tau\subseteq\sigma$ we still
+    is not greater than the size of $\sigma'$ and by the inclusion $\tau\subseteq\sigma$ we still
     have $\Sigma' \vdash_S t : B$  for all $B\in\tau$.
     %
     This means that $\Sigma \vdash_{S} t : B_i$ for each  $i\in\{1,\ldots,n\}$. Consider now $\bar{B} = (B_1,\ldots,B_n)$. 
