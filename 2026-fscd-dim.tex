@@ -160,7 +160,7 @@ For $R = \{(1, 1), (1, 3), (2, 1), (3, 2), (3, 3)\}$ we have \[R(a, b, c) = (\{a
 
 We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is 
 \emph{left-total} when for each $i\in \{1, \ldots, n\}$ there is $j$ such that $(i,j)\in R$. We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is \emph{right-unique} when for each $i\in\{1, \ldots, m\}$ there is at most one $j\in\{1, \ldots, n\}$
-such that $(j,i)\in R$. In case a relation $R$ is right-unique we have $R(\bar{B}) = (\{A_1\},\ldots, \{A_m\})$, thus we can define a vector $R(\bar{B})\!\!\downarrow\, = (A_1,\ldots,A_m)$.
+such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you also need right-totality, otherwise you get some empty sets!}) we have $R(\bar{B}) = (\{A_1\},\ldots, \{A_m\})$, thus we can define a vector $R(\bar{B})\!\!\downarrow\, = (A_1,\ldots,A_m)$.
 
 \begin{lemma}[Properties of Type Vector Transformations]
 \label{lem:rel-properties}~
@@ -369,7 +369,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
 \end{proof}
 
 \begin{lemma}[Coordinate Weakening] ~
-{\color{red} This Lemma is a weaker, move convoluted version of Lemma~\ref{lem:transform} and can be removed}
+{\color{red} This Lemma is a weaker, more convoluted version of Lemma~\ref{lem:transform} and can be removed}
 \label{lem:weak-dim}
 \begin{enumerate}
     \item If $\Gamma \vdash_k t : \bar{A}$ with $\dim(\bar{A})=n$ 
@@ -543,28 +543,28 @@ Overall, the space required by the alternating decision procedure is polynomial 
 
 \begin{lemma}
 \label{lem:transform}
-If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \times \{1, \ldots, m\}$ is right-unique, then $R(\Gamma) \vdash_{\max(k,m)} t : R(\bar{A})\!\!\downarrow$.
+If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \times \{1, \ldots, m\}$ is right-unique and right-total, then $R(\Gamma) \vdash_{\max(k,m)} t : R(\bar{A})\!\!\downarrow$.
 \end{lemma}
 
 \begin{proof}
-    Assuming $\Gamma \vdash_k t : \bar{A}$ and that $R$ is right-unique, we proceed by induction on $t$.
+    Assuming $\Gamma \vdash_k t : \bar{A}$ and that $R$ is right-unique and right-total, we proceed by induction on $t$.
     Let $n=\max(k,m)$.
     \begin{description}
     %
     \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
-    Therefore, we have $(R(\bar{A}))\!\!\downarrow_{[j]}\in (R(\Gamma(x)))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
+    Therefore, we have $(R(\bar{A}))\!\!\downarrow_{[j]}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
     \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
     %
-    $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})$.
+    $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})\!\!\downarrow$.
     %
     As  $R$ is right-unique (cf.\ Lemma~\ref{lem:rel-properties}), $R(\bar{\sigma}) \Rightarrow R(\bar{B}) = R(\bar{\sigma} \Rightarrow \bar{B}) = R(\bar{A})$.
     By rule ($\Rightarrow$I) we obtain $R(\Gamma) \vdash_n \lambda x.u : R(\bar{A})\!\!\downarrow$.
     %
     \item[Case $t = u\,v$:] For some $\Delta$, $R'$, and $\bar{B}$ we have $\Delta \vdash_k v : \bar{B}$, and weakening the environment by Lemma~\ref{lem:weak}, we have $\Gamma \vdash_n u : R'(\bar{B}) \Rightarrow \bar{A}$.
-    By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})$.
+    By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})\!\!\downarrow$.
     By Lemma~\ref{lemma:dimension-weakening} we have $\Delta \vdash_n v : \bar{B}$.
     Consider $R'' = R \circ R'$. As $R$ is right-unique, we have $R(R'(\bar{B}) \Rightarrow \bar{A}) = R''(\bar{B}) \Rightarrow R(\bar{A})$ and $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$ (cf.~Lemma~\ref{lem:rel-properties}).
-    By rule ($\Rightarrow$E) we obtain $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})$.\qedhere
+    By rule ($\Rightarrow$E) we obtain $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})\!\!\downarrow$.\qedhere
 \end{description}
 \end{proof}
 
