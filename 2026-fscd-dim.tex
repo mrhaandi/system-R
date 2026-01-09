@@ -154,12 +154,12 @@ Let $R \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ be a binary relation 
 \end{definition}
 
 \begin{example}
-For $R = \{(1, 1), (1, 3), (2, 1), (3, 2), (3, 3)\}$ we have \[R(a, b, c) = (\{a, b\}, \{c\}, \{a, c\})\]
+For $R = \{(1, 1), (1, 3), (2, 1), (3, 2), (3, 3)\}$ we have \[R((a, b, c)) = (\{a, b\}, \{c\}, \{a, c\})\]
 \end{example}
 
 We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is 
 \emph{left-total} when for each $i\in \{1, \ldots, n\}$ there is $j$ such that $(i,j)\in R$. We say that a relation $R\subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ is \emph{right-unique} when for each $i\in\{1, \ldots, m\}$ there is at most one $j\in\{1, \ldots, n\}$
-such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you also need right-totality, otherwise you get some empty sets!}) we have $R(\bar{B}) = (\{A_1\},\ldots, \{A_m\})$, thus we can define a vector $R(\bar{B})\!\!\downarrow\, = (A_1,\ldots,A_m)$.
+such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you also need right-totality, otherwise you get some empty sets}) we have $R(\bar{B}) = (\{A_1\},\ldots, \{A_m\})$, thus we can define a vector $R(\bar{B})\!\!\downarrow\, = (A_1,\ldots,A_m)$.
 
 \begin{lemma}[Properties of Type Vector Transformations]
 \label{lem:rel-properties}~
@@ -167,9 +167,9 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you
     \item For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{\sigma})$.
     \item If $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$ and $R$ is left-total, then there exists $R''$ such that $R''(\bar{A}) = \bar{\sigma}$.
     \item If $\bar{A}$ has distinct coordinates, $R''(\bar{A}) = \bar{\sigma}$, $R(\bar{\sigma}) \mathrel{\bar{\subseteq}} R'(\bar{A})$, and $R$ is left-total, then $R \circ R'' \subseteq R'$.
-    \item $R(\Gamma) \cup (R\circ R'(\Delta)) = R(\Gamma \cup R'(\Delta))$
-    \item If $R$ is right-unique and  $\bar{A}_{[i]} \in \bar{\sigma}_{[i]}$ for each $i\in\{1,\ldots, \dim(\bar{\sigma})\}$ then
-        $(R(\bar{A})\!\!\downarrow)_{[j]}\in R(\bar{\sigma})_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$.
+    \item $R(\Gamma_1 \cup \Gamma_2) = R(\Gamma_1) \cup R(\Gamma_2)$
+    \item If $R$ is right-unique and right-total, and $\bar{A} \rbar{\in} \bar{\sigma}$ then
+        $R(\bar{A})\!\!\downarrow \rbar{\in} R(\bar{\sigma})$.
     \item If $R$ is right-unique, then $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
     \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}' \rbar{\supseteq} \bar{\sigma}$ such that $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$ and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
 \end{enumerate}
@@ -177,15 +177,15 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you
 
 \begin{proof}~
     \begin{enumerate}
-        \item Obvious. (?)
+        \item The claim follows from $R(\bar{\sigma})_{[i]} = \bigcup \{\sigma_{[j]} \mid j \, R\, i\} \subseteq \bigcup \{\sigma_{[j]} \mid j \, R'\, i\} = R'(\bar{\sigma})_{[i]}$.
         \item  Consider $R'' = \{ (i, j) \mid \exists k.i\, R'\, k \mbox{ and } j\, R\, k \mbox{ and } \bar{A}_{[i]}\in\bar\sigma_{[j]}\}$.
             We have $R''(\bar{A})_{[j]} = \{ \bar{A}_{[i]} \mid i\, R''\, j \} = \{ \bar{A}_{[i]} \mid  \exists k.i\, R'\, k \mbox{ and } j\, R\, k \mbox{ and } \bar{A}_{[i]}\in\bar\sigma_{[j]}\}$.
             This set is included in $\bar\sigma_{[j]}$ as for each its element $\bar{A}_{[i]}$ we have
             $\bar{A}_{[i]}\in\bar\sigma_{[j]}$. Similarly, $\bar\sigma_{[j]}\subseteq R(\bar\sigma)_{[k]}$ for some $k$ as $R$ is left-total. As $R(\bar\sigma)_{[k]}\subseteq R'(\bar{A})_{[k]}$, each element of $\bar{\sigma}_{[j]}$ must be equal to some $\bar{A}_{[i]}$ such that $i\, R'\, k$.
         \item We have $(R \circ R'')(\bar{A}) = R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$.
         Since $\bar{A}$ has distinct coordinates, we obtain the claim.     
-        \item Obvious. (?)
-        \item Obvious. (?)
+        \item Immediate from the definition.
+        \item Since $R$ is right-unique and right-total, for each $i \in \{1, \ldots, \dim(R(\bar{A})\!\!\downarrow)\}$ there is exactly one $j$ such that $j\,R\,i$, and we have  $(R(\bar{A})\!\!\downarrow)_{[i]} = \bar{A}_{[j]} \in \bar{\sigma}_{[j]} \subseteq R(\bar{\sigma})_{[i]}$.
         \item Since $R$ is right-unique, we have $(R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow)_{[i]}\, = \bar{\sigma}_{[j]}\to\bar{A}_{[j]}$ where  $j\, R\, i$. 
         Similarly, $R(\bar{\sigma})_{[i]} =  \bar{\sigma}_{[j]}$ and %
         $(R(\bar{A})\!\!\downarrow)_{[i]} = \bar{A}_{[j]}$ where  $j\, R\, i$. Consequently, we obtain $R(\bar{\sigma} \Rightarrow \bar{A}) = R(\bar{\sigma}) \Rightarrow R(\bar{A})$.
@@ -193,32 +193,7 @@ such that $(j,i)\in R$. In case a relation $R$ is right-unique ({\color{red} you
     \end{enumerate}
 \end{proof}
 
-Judgments in the following \emph{parallel intersection type system} are of shape $\Gamma \vdash t : \bar{A}$ such that $\dim(\Gamma) = \dim(\bar{A})$.
-
-\begin{definition}[Parallel Intersection Type System, TODO: remove, define via $\vdash_k$]
-\label{def:unbounded-type-system}
-~\\
-
-\begin{minipage}{\textwidth}
-\centering
-\begin{tabular}{l}
-{\RightLabel{\textnormal{(Ax)}}
-\AxiomC{$A_i \in \sigma_i$ for $i = 1, \ldots, n$}
-\UnaryInfC{$\Gamma, x : (\sigma_1, \ldots, \sigma_n) \vdash x : (A_1, \ldots, A_n)$}
-\DisplayProof}
-\\\\
-{\RightLabel{\textnormal{($\Rightarrow$I)}}
-\AxiomC{$\Gamma, x: \bar{\sigma} \vdash t : \bar{A}$}
-\UnaryInfC{$\Gamma \vdash \lambda x.t : \bar{\sigma} \Rightarrow \bar{A}$}
-\DisplayProof}\quad
-{\RightLabel{\textnormal{($\Rightarrow$E)}}
-\AxiomC{$\Gamma \vdash t : R(\bar{A}) \Rightarrow \bar{B}$}
-\AxiomC{$\Delta \vdash u : \bar{A}$}
-\BinaryInfC{$\Gamma \cup R(\Delta) \vdash t \; u : \bar{B}$}
-\DisplayProof}
-\end{tabular}
-\end{minipage}
-\end{definition}
+Judgments in the following \emph{parallel intersection type system} with a \emph{dimension bound} $k$ are of shape $\Gamma \vdash_k t : \bar{A}$ such that $\dim(\Gamma) = \dim(\bar{A})$.
 
 \begin{definition}[Parallel Intersection Type System of Bounded Dimension]
 \label{def:bounded-type-system}
@@ -248,7 +223,7 @@ Judgments in the following \emph{parallel intersection type system} are of shape
 
 We may leave out the actual bound, if it is immaterial.
 
-\begin{definition}[Parallel Intersection Type System (Derived)]
+\begin{definition}[Parallel Intersection Type System]
     $\Gamma \vdash t : \bar{A}$ means $\Gamma \vdash_k t : \bar{A}$ for some $k$.
 \end{definition}
 
@@ -267,7 +242,7 @@ We proceed by induction on $t$.
     \item[Case $t = \lambda x.u$:] By the induction hypothesis we have $\emptyset \vdash_k u : ()$.
     Due to $\emptyset, x : () = \emptyset$ and $() \Rightarrow () = ()$, by rule ($\Rightarrow$I) we have $\emptyset \vdash_k \lambda x.u : ()$ .
     \item[Case $t = u\,v$:] By the induction hypothesis we have $\emptyset \vdash_k u : ()$ and $\emptyset \vdash_k v : ()$.
-    For $R = \emptyset$ we have $() = R(()) \Rightarrow ()$ and {\color{red} $\Gamma \cup R(\Delta) = \emptyset$.} \marginpar{\color{red}Shouldn't $\Gamma,\Delta$ be just $\emptyset$?}
+    For $R = \emptyset$ we have $() = R(()) \Rightarrow ()$ and $\emptyset \cup R(\emptyset) = \emptyset$.
     Therefore, by rule ($\Rightarrow$E) we have $\emptyset \vdash_k u\,v : ()$.\qedhere
 \end{description}
 \end{proof}
@@ -325,25 +300,28 @@ Let
 We have the following derivation
 
 
-\AxiomC{$\Gamma_1 \vdash x : R_1(b, c) \Rightarrow (a)$}
-\AxiomC{$\{y : (\{a\} \to b, \{a\} \to c)\} \vdash y : R_2(a) \Rightarrow (b, c)$}
-\AxiomC{$\{z : (a)\} \vdash z : (a)$}
-\BinaryInfC{$\Gamma_2 \vdash y\,z : (b, c)$}
-\BinaryInfC{$\Gamma_1 \cup R_1(\Gamma_2) \vdash x\,(y\,z) : (a)$}
+\AxiomC{$\Gamma_1 \vdash_2 x : R_1((b, c)) \Rightarrow (a)$}
+\AxiomC{$\{y : (\{a\} \to b, \{a\} \to c)\} \vdash_2 y : R_2((a)) \Rightarrow (b, c)$}
+\AxiomC{$\{z : (a)\} \vdash_2 z : (a)$}
+\BinaryInfC{$\Gamma_2 \vdash_2 y\,z : (b, c)$}
+\BinaryInfC{$\Gamma_1 \cup R_1(\Gamma_2) \vdash_2 x\,(y\,z) : (a)$}
 \DisplayProof
 \end{example}
 
-\begin{definition}[Dimensional Restriction]
-{\color{red}
-$\Gamma \vdash_k t : \bar{A}$ means that the length of vectors in some derivation of $\Gamma \vdash t : \bar{A}$ is at most $k$.}
-\end{definition}
+\begin{lemma}[Dimensional Restriction]
+Any vector occurring in a derivation of $\Gamma \vdash_k t : \bar{A}$ has at most $k$ coordinates.
+\end{lemma}
+
+\begin{proof}
+    Induction on $t$.
+\end{proof}
 
 \begin{lemma}[Dimension Weakening]
     \label{lemma:dimension-weakening}
-    If $\Gamma\vdash_k t : \bar{A}$ and $k<m$ then $\Gamma\vdash_m t:\bar{A}$.    
+    If $\Gamma\vdash_k t : \bar{A}$ and $k \leq m$ then $\Gamma\vdash_m t:\bar{A}$.    
 \end{lemma}
 \begin{proof}
-    The proof is by induction over $t$. All cases follow immediately from the induction hypothesis except for the case when $t=x$ for some variable $x$. In this case the dimension restriction $n\leq k$ is replaced by $n\leq m$, which obviously holds given $k<m$.
+    The proof is by induction over $t$. All cases follow immediately from the induction hypothesis except for the case when $t=x$ for some variable $x$. In this case the dimension restriction $n\leq k$ is replaced by $n\leq m$, which obviously holds given $k \leq m$.
 \end{proof}
 
 
@@ -366,6 +344,57 @@ If $\Gamma \vdash_k t : \bar{A}$ and $\Gamma\rbar{\subseteq} \Delta$, then $\Del
     $\Delta \cup R(\Delta') = \Delta$, obtaining the claim.\qedhere
 \end{description}
 \end{proof}
+
+\begin{lemma}
+\label{lem:transform}
+If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \times \{1, \ldots, m\}$ is right-unique and right-total, then $R(\Gamma) \vdash_{\max(k,m)} t : R(\bar{A})\!\!\downarrow$.
+\end{lemma}
+
+\begin{proof}
+    Assuming $\Gamma \vdash_k t : \bar{A}$ and that $R$ is right-unique and right-total, we proceed by induction on $t$.
+    Let $n=\max(k,m)$.
+    \begin{description}
+    %
+    \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
+    Therefore, we have ${(R(\bar{A})\!\!\downarrow)_{[j]}}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
+    \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
+    %
+    $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})\!\!\downarrow$.
+    %
+    As  $R$ is right-unique (cf.\ Lemma~\ref{lem:rel-properties}), $R(\bar{\sigma}) \Rightarrow R(\bar{B}) = R(\bar{\sigma} \Rightarrow \bar{B}) = R(\bar{A})$.
+    By rule ($\Rightarrow$I) we obtain $R(\Gamma) \vdash_n \lambda x.u : R(\bar{A})\!\!\downarrow$.
+    %
+    \item[Case $t = u\,v$:] For some $\Delta$, $R'$, and $\bar{B}$ we have $\Delta \vdash_k v : \bar{B}$, and weakening the environment by Lemma~\ref{lem:weak}, we have $\Gamma \vdash_n u : R'(\bar{B}) \Rightarrow \bar{A}$.
+    By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})\!\!\downarrow$.
+    By Lemma~\ref{lemma:dimension-weakening} we have $\Delta \vdash_n v : \bar{B}$.
+    Let $R'' = R \circ R'$. As $R$ is right-unique, we have $R(R'(\bar{B}) \Rightarrow \bar{A}) = R''(\bar{B}) \Rightarrow R(\bar{A})$ and $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$ (cf.~Lemma~\ref{lem:rel-properties}).
+    By rule ($\Rightarrow$E) we obtain $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})\!\!\downarrow$.\qedhere
+\end{description}
+\end{proof}
+
+The above Lemma~\ref{lem:transform} can be used to permute, remove, or copy vector coordinates in derivations, illustrated by the following Example~\ref{xmp:deduplicate}.
+
+\begin{example}\label{xmp:deduplicate}
+    Assume $\Gamma \vdash_k t : (A_1, A_2, A_3)$. By Lemma~\ref{lem:transform} we have:
+    \begin{itemize}
+        \item $R_1(\Gamma) \vdash_{\max(k, 2)} t : (A_3, A_1)$ where $R_1 := \{(1, 2), (3, 1)\}$
+        \item $R_2(\Gamma) \vdash_{\max(k, 4)} t : (A_1, A_2, A_2, A_3)$ where $R_2 := \{(1, 1), (2, 2), (2, 3), (3, 4)\}$
+    \end{itemize}
+\end{example}
+
+A subtle aspect of Lemma~\ref{lem:transform} is that coordinate copies to increase the dimension besides
+
+\begin{example}
+    Let $\sigma := \{a,b,c\}$.
+    We have $\{x : (\sigma), y : (\sigma \to d)\} \vdash_3 y\,x : (d)$, and $3$ is the minimal dimension necessary to derive this judgment.
+    By Lemma~\ref{lem:transform}, using the relation $\{(1,1), (1,2)\}$ we have $\{x : (\sigma, \sigma), y : (\sigma \to d, \sigma \to d)\} \vdash_3 y\,x : (d, d)$.
+    In particular, dimension~$3$ suffices to account for the coordinate copy shown in the following derivation:\medskip\\
+    \AxiomC{$\{y : (\sigma \to d, \sigma \to d)\} \vdash_3 y : R((a,b,c)) \Rightarrow (d, d)$}
+    \AxiomC{$\{x : (\{a\},\{b\},\{c\})\} \vdash_3 x : (a,b,c)$}
+    \BinaryInfC{$\{x : (\sigma, \sigma), y : (\sigma \to d, \sigma \to d)\} \vdash_3 y\,x : (d, d)$}
+    \DisplayProof\medskip\\
+    where $R := \{(1,1),(1,2),(2,1),(2,2),(3,1),(3,2)\}$ and $R((\{a\},\{b\},\{c\})) = (\sigma, \sigma)$.
+\end{example}
 
 \begin{lemma}[Coordinate Weakening] ~
 {\color{red} This Lemma is a weaker, more convoluted version of Lemma~\ref{lem:transform} and can be removed}
@@ -470,7 +499,7 @@ The number of subformulae of a given type or set of types is polynomial in the n
 %    \label{lemma:subformula}
 %    Assume that $\Gamma\vdash_k t : A$ and $t$ is in normal form.
 %    There is a derivation of $\Gamma\vdash_k t : A$
-%    such that for each judgement $\Delta\vdash_k u : B$ in this derivation
+%    such that for each judgment $\Delta\vdash_k u : B$ in this derivation
 %    for each $(x:\bar{\sigma})\in\Delta$ the type $\sigma_{[i]}$ for $i\in\{1,\ldots,\dim(\Delta)\}$
 %     is a subtype of types in $\Gamma, A$ as well as
 %    $B$ is a subtype of types in $\Gamma, A$.
@@ -538,45 +567,7 @@ Overall, the space required by the alternating decision procedure is polynomial 
     This yields an \textsf{APSPACE}, or equivalently, an \textsf{EXPTIME} decision procedure.
 \end{proof}
 
-
-
-\begin{lemma}
-\label{lem:transform}
-If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \times \{1, \ldots, m\}$ is right-unique and right-total, then $R(\Gamma) \vdash_{\max(k,m)} t : R(\bar{A})\!\!\downarrow$.
-\end{lemma}
-
-\begin{proof}
-    Assuming $\Gamma \vdash_k t : \bar{A}$ and that $R$ is right-unique and right-total, we proceed by induction on $t$.
-    Let $n=\max(k,m)$.
-    \begin{description}
-    %
-    \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
-    Therefore, we have ${(R(\bar{A})\!\!\downarrow)_{[j]}}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
-    \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
-    %
-    $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})\!\!\downarrow$.
-    %
-    As  $R$ is right-unique (cf.\ Lemma~\ref{lem:rel-properties}), $R(\bar{\sigma}) \Rightarrow R(\bar{B}) = R(\bar{\sigma} \Rightarrow \bar{B}) = R(\bar{A})$.
-    By rule ($\Rightarrow$I) we obtain $R(\Gamma) \vdash_n \lambda x.u : R(\bar{A})\!\!\downarrow$.
-    %
-    \item[Case $t = u\,v$:] For some $\Delta$, $R'$, and $\bar{B}$ we have $\Delta \vdash_k v : \bar{B}$, and weakening the environment by Lemma~\ref{lem:weak}, we have $\Gamma \vdash_n u : R'(\bar{B}) \Rightarrow \bar{A}$.
-    By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})\!\!\downarrow$.
-    By Lemma~\ref{lemma:dimension-weakening} we have $\Delta \vdash_n v : \bar{B}$.
-    Consider $R'' = R \circ R'$. As $R$ is right-unique, we have $R(R'(\bar{B}) \Rightarrow \bar{A}) = R''(\bar{B}) \Rightarrow R(\bar{A})$ and $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$ (cf.~Lemma~\ref{lem:rel-properties}).
-    By rule ($\Rightarrow$E) we obtain $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})\!\!\downarrow$.\qedhere
-\end{description}
-\end{proof}
-
 The substitution lemma requires tight control over the \edmark
-
-\begin{lemma}
-If in a derivation of the judgment $\Gamma \vdash_k t : \bar{A}$ there occurs $\Delta \vdash_k u : \bar{B}$ such that for some distinct $i, j$
-$\bar{B}_{[i]} = \bar{B}_{[j]}$ and $\forall x.\Delta(x)_{[i]} = \Delta(x)_{[j]}$, then there is a derivation of $\Gamma \vdash_k t : \bar{A}$ that has no such property (TODO rephrase).
-\end{lemma}
-
-\begin{proof}
-Use Lemma~\ref{lem:transform} to collapse redundant entries and idempotence of intersection.
-\end{proof}
 
 \begin{lemma}[substitution lemma]
     If $\Gamma, x : R(\bar{A}) \vdash_k t : \bar{B}$ and $\Delta \vdash_k u : \bar{A}$, then $\Gamma \cup R(\Delta) \vdash_k t[x := u] : \bar{B}$.
@@ -623,7 +614,7 @@ Use Lemma~\ref{lem:transform} to collapse redundant entries and idempotence of i
 
 \section{Relation to Traditional Intersection Type Systems}
 
-As a technical tool to establish relation with the traditional intersection type systems, we use the strict system of van Bakel \cite[Section~5]{Bakel04,Bakel11}. This serves us to establish relation with the system of Barendregt, Coppo, Dezani-Ciancaglini \cite{BarendregtCD83}, which is expressed in Theorem~\ref{theorem:bcd} below.
+As a technical tool to establish relation with the traditional intersection type systems, we use the strict system of van Bakel \cite{Bakel04}, \cite[Section~5]{Bakel11}. This serves us to establish relation with the system of Barendregt, Coppo, Dezani-Ciancaglini \cite{BarendregtCD83}, which is expressed in Theorem~\ref{theorem:bcd} below.
 
 
 \begin{definition}[Strict Intersection Type System~{\cite[Definition~5.1]{Bakel11}}]
