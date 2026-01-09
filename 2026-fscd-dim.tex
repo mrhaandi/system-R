@@ -65,8 +65,6 @@
 
 %\nolinenumbers %uncomment to disable line numbering
 
-
-
 %Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \EventEditors{John Q. Open and Joan R. Access}
 \EventNoEds{2}
@@ -81,7 +79,6 @@
 \ArticleNo{23}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
 \DeclareMathOperator{\dom}{dom}
 \DeclareMathOperator{\var}{var}
 \DeclareMathOperator{\rank}{rank}
@@ -94,7 +91,6 @@
 
 \maketitle
 
-%TODO mandatory: add short abstract of the document
 \begin{abstract}
 Bounded Parallel Intersection Type System
 \end{abstract}
@@ -115,7 +111,7 @@ A, B &::=& a \mid \sigma \to A\\
 \end{definition}
 Intersection types are a variant of strict types considered by van Bakel~\cite{Bakel92,Bakel04,Bakel11}.
 
-We denote vectors of types and sets of types by $\bar{A}$ and $\bar{\sigma}$ respectively.
+We denote vectors of types and vectors of sets of types by $\bar{A}$ and $\bar{\sigma}$ respectively.
 If $\bar{\sigma} = (\sigma_1, \ldots, \sigma_n)$ and $\bar{A} = (A_1, \ldots, A_n)$, then $\bar{\sigma} \Rightarrow \bar{A} = (\sigma_1 \to A_1, \ldots, \sigma_n \to A_n)$, in particular $()\Rightarrow()=()$. We write $\bar{A}_{[i]}$ for $A_i$ and $\bar{\sigma}_{[i]}$ for $\sigma_i$.
 The \emph{dimension} of a vector is the number of its \emph{coordinates}, that is $\dim(A_1, \ldots, A_n) = n$.
 We extend relations $\subseteq$, $\in$, and the operation $\cup$ to vectors.
@@ -183,13 +179,13 @@ Preliminary properties of vector transformations are listed in the following Lem
 \begin{lemma}[Properties of Vector Transformations]
 \label{lem:rel-properties}~
 \begin{enumerate}
-    \item For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{\sigma})$.
-    \item If $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$ and $R$ is left-total, then there exists $R''$ such that $R''(\bar{A}) = \bar{\sigma}$.
-    \item If $\bar{A}$ has distinct coordinates, $R''(\bar{A}) = \bar{\sigma}$, $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$, and $R$ is left-total, then $R \circ R'' \subseteq R'$.
-    \item $R(\Gamma_1 \cup \Gamma_2) = R(\Gamma_1) \cup R(\Gamma_2)$
-    \item If $R$ is right-unique and right-total, and $\bar{A} \rbar{\in} \bar{\sigma}$ then
+    \item\label{prop:rel-properties:monotone} For two binary relations $R, R' \subseteq \{1, \ldots, n\} \times \{1, \ldots, m\}$ we have that if $R \subseteq R'$, then for all $\bar{\sigma}$ such that $\dim(\bar{\sigma}) = n$ we have $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{\sigma})$.
+    \item\label{prop:rel-properties:exact} If $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$ and $R$ is left-total, then there exists $R''$ such that $R''(\bar{A}) = \bar{\sigma}$.
+    \item\label{prop:rel-properties:compose} If $\bar{A}$ has distinct coordinates, $R''(\bar{A}) = \bar{\sigma}$, $R(\bar{\sigma}) \rbar{\subseteq} R'(\bar{A})$, and $R$ is left-total, then $R \circ R'' \subseteq R'$.
+    \item\label{prop:rel-properties:union} $R(\Gamma_1 \cup \Gamma_2) = R(\Gamma_1) \cup R(\Gamma_2)$
+    \item\label{prop:rel-properties:in} If $R$ is right-unique and right-total, and $\bar{A} \rbar{\in} \bar{\sigma}$ then
         $R(\bar{A})\!\!\downarrow \rbar{\in} R(\bar{\sigma})$.
-    \item If $R$ is right-unique and right-total, then $R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow = R(\bar{\sigma}) \Rightarrow R(\bar{A})\!\!\downarrow$.
+    \item\label{prop:rel-properties:impl} If $R$ is right-unique and right-total, then $R(\bar{\sigma} \Rightarrow \bar{A})\!\!\downarrow\, = R(\bar{\sigma}) \Rightarrow R(\bar{A})\!\!\downarrow$.
     \item\label{prop:rel-properties:saturate} If $R(\bar{\sigma}) \rbar{\subseteq} \bar{\tau}$ and $R$ is left-total, then there exists $\bar{\sigma}'$ such that $\bar{\sigma} \rbar{\subseteq} \bar{\sigma}'$, $R(\bar{\sigma}') \rbar{\subseteq} \bar{\tau}$, and for all $i \in \{1, \ldots, \dim(\bar{\sigma}')\}$ there exists $j \in \{1, \ldots, \dim(\bar{\tau})\}$ such that $\bar{\sigma}'_{[i]} = \bar{\tau}_{[j]}$.
 \end{enumerate}
 \end{lemma}
@@ -268,8 +264,7 @@ We proceed by induction on $t$.
 
 Similar systems:
 \begin{itemize}
-\item The system $\lambda^{\text{CIL}}$ by Wells et al
-  \cite{WellsDMT02} (see \cite{WellsH02} for a simplified version of
+\item The system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} (see \cite{WellsH02} for a simplified version of
   the system) is a system in Church style with explicit type
   annotations in $\lambda$-binders where different derivations for the
   same subterm are managed by means of records. A record of types with
@@ -384,19 +379,21 @@ If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \
     Let $n=\max(k,m)$.
     \begin{description}
     %
-    \item[Case $t = x$:] We have $\bar{A}_{[i]} \in \Gamma(x)_{[i]}$ for $i \in \{1, \ldots, \dim(\bar{A})\}$.
-    Therefore, we have ${(R(\bar{A})\!\!\downarrow)_{[j]}}\in R(\Gamma(x))_{[j]}$ for $j \in \{1, \ldots, \dim(R(\bar{A}))\}$ (cf.\ Lemma~\ref{lem:rel-properties}), which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
+    \item[Case $t = x$:] We have $\bar{A} \rbar{\in} \Gamma(x)$.
+    By Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:in}), we have $R(\bar{A})\!\!\downarrow\, \rbar{\in} R(\Gamma(x))$, which by rule (Ax) implies $R(\Gamma) \vdash_n x : R(\bar{A})\!\!\downarrow$.
     \item[Case $t = \lambda x.u$:] For some $\bar{\sigma}$ and $\bar{B}$ we have $\bar{A} = \bar{\sigma} \Rightarrow \bar{B}$, and by the induction hypothesis we have %
     %
     $R(\Gamma), x : R(\bar{\sigma}) \vdash_n u : R(\bar{B})\!\!\downarrow$.
     %
-    As  $R$ is right-unique (cf.\ Lemma~\ref{lem:rel-properties}), $R(\bar{\sigma}) \Rightarrow R(\bar{B}) = R(\bar{\sigma} \Rightarrow \bar{B}) = R(\bar{A})$.
+    By Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:impl}) we have $R(\bar{\sigma}) \Rightarrow R(\bar{B})\!\!\downarrow\, = R(\bar{\sigma} \Rightarrow \bar{B})\!\!\downarrow\, = R(\bar{A})\!\!\downarrow$.
     By rule ($\Rightarrow$I) we obtain $R(\Gamma) \vdash_n \lambda x.u : R(\bar{A})\!\!\downarrow$.
     %
     \item[Case $t = u\,v$:] For some $\Delta$, $R'$, and $\bar{B}$ we have $\Delta \vdash_k v : \bar{B}$, and weakening the environment by Lemma~\ref{lem:weak}, we have $\Gamma \vdash_n u : R'(\bar{B}) \Rightarrow \bar{A}$.
     By the induction hypothesis we obtain $R(\Gamma) \vdash_n u : R(R'(\bar{B}) \Rightarrow \bar{A})\!\!\downarrow$.
     By Lemma~\ref{lemma:dimension-weakening} we have $\Delta \vdash_n v : \bar{B}$.
-    Let $R'' = R \circ R'$. As $R$ is right-unique, we have $R(R'(\bar{B}) \Rightarrow \bar{A}) = R''(\bar{B}) \Rightarrow R(\bar{A})$ and $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$ (cf.~Lemma~\ref{lem:rel-properties}).
+    Let $R'' = R \circ R'$.
+    By Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:impl}) we have $R(R'(\bar{B}) \Rightarrow \bar{A})\!\!\downarrow\, = R''(\bar{B}) \Rightarrow R(\bar{A})\!\!\downarrow$.
+    By Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:union}) we have $R(\Gamma) \cup R''(\Delta) = R(\Gamma \cup R'(\Delta))$.
     By rule ($\Rightarrow$E) we obtain $R(\Gamma \cup R'(\Delta)) \vdash_n u\,v : R(\bar{A})\!\!\downarrow$.\qedhere
 \end{description}
 \end{proof}
@@ -459,13 +456,12 @@ The substitution lemma requires tight control over the \edmark
         \item Due to $\bar{\tau} \subseteq R(\bar{A})$, by the weakening lemma 
         (cf.\ Lemma~\ref{lem:weak}) and the induction hypothesis we have $\Gamma' \cup R(\Delta) \vdash_k v[x := u] : R'(\bar{C}) \Rightarrow \bar{B}$.
         %
-        \item Due to $R'(\bar{\sigma}) \subseteq R(\bar{A})$ and since $R'$ is left-total and $\bar{A}$ has unique coordinates, by Lemma~\ref{lem:rel-properties} there exists a $R''$ such that $R'\circ R''\subseteq R$ and $R''(\bar{A}) = \bar{\sigma}$.
+        \item Due to $R'(\bar{\sigma}) \subseteq R(\bar{A})$ and since $R'$ is left-total and $\bar{A}$ has unique coordinates, by Lemma~\ref{lem:rel-properties}(\ref{prop:rel-properties:exact}) there exists a $R''$ such that $R'\circ R''\subseteq R$ and $R''(\bar{A}) = \bar{\sigma}$.
         By the induction hypothesis we have $\Delta' \cup R''(\Delta) \vdash_k w[x := u] : \bar{C}$
     \end{itemize}
     By rule ($\Rightarrow$E) we have $\Gamma' \cup R(\Delta) \cup R'(\Delta' \cup R''(\Delta)) \vdash_k (v\,w)[x := u] : \bar{B}$.
-    By the weakening lemma (cf. Lemma~\ref{lem:weak}), it suffices to show that $\Gamma' \cup R(\Delta) \cup R'(\Delta') \cup R'(R''(\Delta)) \subseteq \Gamma \cup R(\Delta)$.
-    This follows from $\Gamma = \Gamma' \cup R'(\Delta')$, $R' \circ R'' \subseteq R$. \qedhere
-    %and Lemma~\ref{lem:rel-properties}. 
+    By the weakening lemma (cf. Lemma~\ref{lem:weak}), it suffices to show that $\Gamma' \cup R(\Delta) \cup R'(\Delta') \cup R'(R''(\Delta)) \rbar{\subseteq} \Gamma \cup R(\Delta)$.
+    This follows from $\Gamma = \Gamma' \cup R'(\Delta')$ and $R' \circ R'' \subseteq R$. \qedhere
 \end{description}
 \end{proof}
 
@@ -515,7 +511,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
     If $\Gamma_{[i]}\vdash_S t:\bar{A}_{[i]}$ for each $i\in\{1,\ldots, \dim(\bar{A})\}$ then $\Gamma\vdash t:\bar{A}$.
 \end{lemma}
 \begin{proof}
-    The proof is by induction over the structure of $t$. Assume the notation of the lemma formulation.
+    Induction on $t$. Assume $\Gamma_{[i]}\vdash_S t:\bar{A}_{[i]}$ for each $i\in\{1,\ldots, \dim(\bar{A})\}$.
 
      \begin{description}
         %
@@ -598,7 +594,7 @@ Here are the rules of the strict system slightly adapted to notation used in thi
             \end{array}
         \end{equation}
         For each $i\in\{1,\ldots,n\}$ we consider indices  
-        $\mathcal{I}_i = \{ p \mid (p,i)\in R\}$. %
+        $\mathcal{I}_i = \{ p \mid p\,R\,i\}$. %
         %
         Observe that $\Gamma'(x)\cup R(\Delta)(x)\rbar{\subseteq} \Gamma(x)$
         for $x\in\dom(\Gamma)$ and consequently $(R(\Delta)(x))_{[i]}\subseteq(\Gamma(x))_{[i]}$.
@@ -623,8 +619,8 @@ The set of types in this system is bigger than the set of strict types of van Ba
 However, for each type $\varphi$ in this system there is a set of strict types $A_1,\ldots,A_n$ such that $\varphi$ is
 equivalent to their intersection (cf.\ \cite[Lemma 2.2.2]{Bakel92}).
 This equivalence is the canonical equivalence induced by the quasi-order $\leq$ that is the subtyping relation in BCD system.
-Therefore, we do not lose any generality by writing $\Sigma\vdash_{BCD} t:\sigma$, where $\Sigma$ and $\sigma$ comply to the syntax used in this paper.
-We can also write $\Sigma\vdash_{BCD} t:A$ as strict types are a special case of BCD types.
+Therefore, we do not lose any generality by writing $\Sigma\vdash_{\textnormal{BCD}} t:\sigma$, where $\Sigma$ and $\sigma$ comply to the syntax used in this paper.
+We can also write $\Sigma\vdash_{\textnormal{BCD}} t:A$ as strict types are a special case of BCD types.
 %
 %We can embed the intersection types from Definition~\ref{def:itypes} using the following
 %translation:
@@ -653,9 +649,9 @@ We can also write $\Sigma\vdash_{BCD} t:A$ as strict types are a special case of
  To establish the relation between our system and the system BCD, we use the following statement mentioned in \cite[Section~5]{Bakel11}. 
 \begin{theorem}[van Bakel, \cite{Bakel11}]
     \label{theorem:vanBakelS}
-    If $\Sigma\vdash_{BCD} t:\sigma$ then there are $\Sigma',\{A_1,\ldots,A_n\}$ such that $\Sigma\leq\Sigma'$, $\Sigma' \vdash_{S} t:A_i$ for each $i\in\{1,\ldots,n\}$ and $\{A_1,\ldots,A_n\}\leq\sigma$.
+    If $\Sigma\vdash_{\textnormal{BCD}} t:\sigma$ then there are $\Sigma',\{A_1,\ldots,A_n\}$ such that $\Sigma\leq\Sigma'$, $\Sigma' \vdash_{S} t:A_i$ for each $i\in\{1,\ldots,n\}$ and $\{A_1,\ldots,A_n\}\leq\sigma$.
 
-    Moreover, If $\Sigma \vdash_{S} t:A$ then $\Sigma\vdash_{BCD} t:A$.
+    Moreover, If $\Sigma \vdash_{S} t:A$ then $\Sigma\vdash_{\textnormal{BCD}} t:A$.
 \end{theorem}
 A similar theorem was proved in \cite{Bakel92}  (Theorem 2.2.6) for another variant of the strict system the rules of which are derivable in the strict system of van Bakel used in this paper.
 
@@ -693,7 +689,7 @@ The considerations above give us the following comparison of derivability in our
 \end{theorem}
 \begin{proof}
     For the proof of (1), we assume $\Gamma \vdash_k t : \bar{A}$, which by Lemma~\ref{lemma:toS} gives us that $\Gamma_{[i]}\vdash_S t : \bar{A}_{[i]}$ for $i\in\{1,\ldots,\dim(\bar{A})\}$.
-    Then the second statement of Theorem~\ref{theorem:vanBakelS} gives us that $\Gamma_{[i]}\vdash_{BCD} t:\bar{A}_{[i]}$.
+    Then the second statement of Theorem~\ref{theorem:vanBakelS} gives us that $\Gamma_{[i]}\vdash_{\textnormal{BCD}} t:\bar{A}_{[i]}$.
 
     For the proof of (2), we assume that $\Sigma \vdash_{\textnormal{BCD}} t : \sigma$. By the first statement of Theorem~\ref{theorem:vanBakelS}, we obtain an environment $\Sigma'$ such that $\Sigma\leq\Sigma'$ and a type $\sigma' = \{B_1,\ldots, B_{m}\}$ such that
     $\Sigma' \vdash_S t : B_i$ for all $i\in\{1,\ldots,m\}$ and %
@@ -878,7 +874,7 @@ Since rank $2$ normal form typings are captured by linear multiset-dimension~\ci
 \begin{corollary}[{cf.~\cite[Proposition~23]{DudenhefnerR17}}]
     \label{cor:rank2}
     Let $t$ be a term in $\beta$-normal form, let $\bar{A}$ be a vector of length $n$ such that $\rank(\bar{A}_{[i]}) = 2$ for $i \in \{1, \ldots, n\}$, and let $\Gamma$ be an environment such that $\Gamma_{[i]}(x)$ is an intersection of simple types for $i \in \{1, \ldots, n\}$ and $x \in \dom(\Gamma)$.
-    If $\Gamma_{[i]} \vdash_S t : \bar{A}_{[i]}$, then $\Gamma \vdash_n : \bar{A}$.
+    If $\Gamma_{[i]} \vdash_S t : \bar{A}_{[i]}$, then $\Gamma \vdash_n t : \bar{A}$.
 \end{corollary}
 
 Second, the following Lemma~\ref{lem:exp_blowup_1} shows that there are types $A_1, A_2, \ldots$ which are inhabited in dimension $2$, but each $A_i$ requires at least multiset dimension $2^i$ to be assigned to any term. 
@@ -917,7 +913,7 @@ Second, the following Lemma~\ref{lem:exp_blowup_1} shows that there are types $A
     
 \end{proof}
 
-Third, complementarily to the above Lemma~\ref{lem:exp_blowup_1}, there is a family terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
+Third, complementarily to the above Lemma~\ref{lem:exp_blowup_1}, there is a family of terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
 
 \begin{lemma}\label{lem:exp_blowup_2}
     There exists a type $A$ and a family of terms $\{t_1, t_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
@@ -969,48 +965,5 @@ This is different for the system $(\vdash_k)$ for which in rule ($\Rightarrow$E)
 Without the monotonicity condition, the \textsf{EXPSPACE} (or, alternating exponential time) argument is not applicable.
 
 Overall, the present notion of dimension resides between the multi-set dimension and set-dimension, while preserving decidable inhabitation.
-
-\newpage
-
-The following example shows more of the data flow management features of the present system.
-It is more than a mere vector presentation of the strict intersection type system.
-
-\begin{example}[Independent, Sequential Intersection Introduction]
-Fix the following:
-\begin{itemize}
-    \item $\sigma_1 := \{f, g\}$
-    \item $A_1 := \{b_1 \to e \to c\}$
-    \item $A_2 := \{b_2 \to e \to d\}$
-    \item $\sigma_2 := \{\{b_1\} \to \{A_1\} \to c, \{b_2\} \to \{A_2\} \to d\}$
-    \item $\tau := \sigma_1 \to \{\sigma_1 \to e\} \to \{\sigma_2 \to a\} \to a$
-    \item $N := \lambda rs.s\,r\,(y\,x)$
-    \item $M := \lambda xyz.z\,N$
-    \item $R := \{(1, 1), (1, 2)\}$
-\end{itemize}
-   A derivation of $\emptyset \vdash_S M : \tau$ in the strict intersection type system contains three occurrences of the intersection introduction rule ($\cap$I) with the following concluding judgments:
-\begin{enumerate}
-    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}\} \vdash_S N : \sigma_3$
-    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}, r : \{b_1\}, s : \{A_1\}\} \vdash_S x : \sigma_1$
-    \item $\{x : \sigma_1, y : \{\sigma_1 \to e\}, z : \{\sigma_2 \to a\}, r : \{b_2\}, s : \{A_2\}\} \vdash_S x : \sigma_1$
-\end{enumerate}
-    Therefore, one may assume that dimension $4$ is necessary for the consecutive intersection introductions.
-    However, we have $\emptyset \vdash_2 M : \tau$.
-    In the system $(\vdash_k)$, there is no reason to keep type assumptions for variables $r$ and $s$ in order to assign a type to the subterm $(y\,x)$.
-    Without the irrelevant assumptions, the distinct environments are unified.
-    The relation $R$ keeps track of this unification, and we can derive the following two judgments:
-\begin{enumerate}
-    \item[(i)] $\{r : (b_1, b_2), s : (A_1, A_2)\} \vdash_2 s\,r : R((e)) \Rightarrow (c, d)$
-    \item[(ii)] $\{x : (\sigma_1), y : (\{\sigma_1 \to e\})\} \vdash_2 y\,x : (e)$
-\end{enumerate}
-    Using the rule ($\Rightarrow$E) we obtain 
-    {\begin{displaymath}
-    \RightLabel{\textnormal{($\Rightarrow$E)}}
-    \AxiomC{$(i)$}
-    \AxiomC{$(ii)$}
-    \BinaryInfC{$\{r : (b_1, b_2), s : (A_1, A_2)\} \cup R(\{x : (\sigma_1), y : (\sigma_2)\}) \vdash_2 s\,r\,(y\,x) : (c, d)$}
-    \DisplayProof
-    \end{displaymath}}%
-    From the above derivation the remainder of the derivation of $\emptyset \vdash_2 M : \tau$ is straightforward.
-\end{example}
 
 \end{document}
