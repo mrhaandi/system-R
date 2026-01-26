@@ -110,59 +110,57 @@ First, by proving the subject reduction property for system \textbf{R} in each b
 
 \section{Introduction}
 
- Intersection type systems \cite{cdv81,BarendregtCD83} are important in  the theory of typed $\lambda$-calculus and programming languages \cite{BDS13}. Such systems are highly expressive, characterizing deep semantic properties of $\lambda$-terms including normalization and solvability properties \cite{BDS13}. Due to their enormous expressive power, the classical type theoretical decision problems, typability and inhabitation, are undecidable for such systems. It is therefore of interest to investigate bounding principles for intersection type systems in order to obtain decidable fragments, which may be useful for applications (for example, type checking or program synthesis) or interesting for understanding the borderline between decidability and undecidability or the complexity of bounded fragments. 
+Intersection type systems \cite{cdv81,BarendregtCD83} are important in  the theory of typed $\lambda$-calculi and programming languages \cite{BDS13}.
+Such systems are highly expressive, characterizing deep semantic properties of $\lambda$-terms including normalization and solvability properties \cite{BDS13}.
+Due to their enormous expressive power, the classical type theoretical decision problems, typability and inhabitation, are undecidable for such systems.
+It is therefore of interest to investigate bounding principles for intersection type systems in order to obtain decidable fragments, which may be useful for applications (for example, type checking or program synthesis) or interesting for understanding the borderline between decidability and undecidability or the complexity of bounded fragments. 
  
- In \cite{DudenhefnerR17} a notion of {\em dimensional bound} was introduced for intersection type derivations. Intuitively, dimension measures the maximal width (number of components) of intersection types introduced for subterms in a derivation. Dimension can be measured in two ways, depending on whether width is measured over sets of types or multisets of types. The former corresponds to the standard, idempotent treatment of intersection types, the latter corresponds to a non-idempotent treatment. Relative to each measurement system we considered inhabitation under dimensional bound: given a type and a dimensional bound, does there exist a term having the type in the given dimension?
- A key result of \cite{DudenhefnerR17} is that the dimension-bounded inhabitation problem is undecidable in set-theoretic dimension (\cite{DudenhefnerR17}, Theorem~28) but decidable and \textsf{EXPSPACE}-complete in multiset dimension (\cite{DudenhefnerR17}, Theorem~34). For fixed dimensional parameter, the latter problem is
- \textsf{PSPACE}-complete.
-The main previous result concerning decidable fragments of the inhabitation problem for intersection types had been given by Urzyczyn \cite{urzy09}, showing that the
-problem is decidable and \textsf{EXPSPACE}-complete in rank $2$, and
-undecidable in all ranks $k$ for $k \ge 3$ (here referring to Leivant’s
-notion of rank \cite{le83}). Because all typings in rank $2$ are derivable in linear multiset dimension (meaning dimension $n$ for an intersection type with $n$ components, see \cite{DudenhefnerR17} Proposition~23), the result for bounded multiset dimension represented a significant generalization of the rank $2$ borderline (typings in bounded multiset dimensions span across all ranks).
+A notion of {\em dimensional bound} was introduced by a subset of the present authors \cite{DudenhefnerR17} for intersection type derivations.
+Intuitively, dimension measures the maximal cumulative width (number of components) of intersection types introduced for subterms in a derivation.
+Dimension can be measured in two ways, depending on whether width is measured over sets of types or multisets of types.
+The former corresponds to the standard, idempotent treatment of intersection types, the latter corresponds to a non-idempotent treatment.
+Relative to each measurement system we considered inhabitation under dimensional bound: given a type and a dimensional bound, does there exist a term having the type in the given dimension?
+A key result of \cite{DudenhefnerR17} is that the dimension-bounded inhabitation problem is undecidable in set-theoretic dimension (\cite{DudenhefnerR17}, Theorem~28) but decidable and \textsf{EXPSPACE}-complete in multiset dimension (\cite{DudenhefnerR17}, Theorem~34).
+For any fixed dimensional parameter, the latter problem is \textsf{PSPACE}-complete.
+The main previous result concerning decidable fragments of the inhabitation problem for intersection types had been given by Urzyczyn \cite{urzy09}, showing that the problem is decidable and \textsf{EXPSPACE}-complete in rank $2$, and undecidable in all ranks $k$ for $k \ge 3$ (here referring to Leivant’s
+notion of rank \cite{le83}).
+Because all typings in rank $2$ are derivable in linear multiset dimension (meaning dimension $n$ for an intersection type with $n$ components~\cite[Proposition~23]{DudenhefnerR17}), the result for bounded multiset dimension represented a significant generalization of the rank $2$ borderline (typings in bounded multiset dimensions span across all ranks).
 
-In this paper we introduce and study a system with {\em bounded parallel intersection} (BPI for short) providing a strict generalization of the multiset dimensional system of \cite{DudenhefnerR17}, extending (and deepening the analysis of) decidable inhabitation under dimensional bound. Intuitively, the BPI system occupies a position between the set-theoretic and the multiset dimensional systems of \cite{DudenhefnerR17}, employing a combination of intersection types represented as vectors of types (which are non-idempotent) and as sets of types (which are idempotent). A technical novelty of the system is the use of relations specifying type vector transformations that, intuitively, capture information flow between types in a derivation, and which mediate between vectors of types and sets of types. Dimensionality in this system is measured by the maximal length of vectors of intersection types (sets of types) that can be used to type a variable. Our main technical result is that inhabitation in bounded dimension is decidable in 
-\textsf{2-EXPTIME}, and for each fixed dimension, inhabitation is decidable in \textsf{EXPTIME}. We have corresponding lower bounds of \textsf{EXPSPACE} and \textsf{PSPACE}, respectively, and leave open the problem of closing the gaps.
+In this paper we introduce and study a system (denoted system~\textbf{R}\footnote{Not to be confused with system~\textbf{R} of de~Carvalho~\cite{Carvalho18}, in which relations play a role in the denotational semantics.}) with {\em bounded parallel intersection} providing a strict generalization of the multiset dimensional system~\cite{DudenhefnerR17}, extending (and deepening the analysis of) decidable inhabitation under dimensional bound.
+Intuitively, system \textbf{R} occupies a position between the set-theoretic and the multiset dimensional systems of \cite{DudenhefnerR17}, employing a combination of intersection types represented as vectors of types (which are non-idempotent) and as sets of types (which are idempotent).
+A technical novelty of the system is the use of \emph{relations} specifying type vector transformations that, intuitively, capture information flow between types in a derivation, and which mediate between vectors of types and sets of types. Dimensionality in this system is measured by the maximal length of vectors of sets of types that can be used to type a variable. Our main technical result is that inhabitation in bounded dimension is decidable in 
+\textsf{2-EXPTIME}, and for each fixed dimension, inhabitation is decidable in \textsf{EXPTIME}.
+We have corresponding lower bounds of \textsf{EXPSPACE} and \textsf{PSPACE}, respectively, and leave open the problem of closing the gaps.
 
-\subparagraph*{Similar systems}
-\begin{itemize}
-\item The system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} (see \cite{WellsH02} for a simplified version of
-  the system) is a system in Church style with explicit type
-  annotations in $\lambda$-binders where different derivations for the
-  same subterm are managed by means of records. A record of types with
-  labels from $I$ is derived here by a record of terms of
-  corresponding labels from $I$.
-\item The proof system ISL presented by Pimentel, Ronchi Della Rocca,
-  and Roversi \cite{PimentelRR12} features independent derivations in
-  tuples led according to the same proof rules. Effectively this works
-  like an intersection type system with vectors.
-  However, the system does not have proof terms. A version of the proof system formulated
-  in terms of a sequent calculus is presented in \cite{RoccaSSV10}.
-\end{itemize}
+\subparagraph*{Related work}
+So-called non-idempotent intersection type systems have been shown to have decidable inhabitation \cite{BKR14}. These systems are fundamentally different from ours, since they have a linear treatment of type assumptions. Linearity turns out to imply polynomial bounds on the depth of inhabitants (in terms of the size of inhabited types), thereby rendering the inhabitation problem much less complex (in \textsf{NP}) for such systems.
 
-\subparagraph*{Comparison with the Sequent Calculus for Intersection Logic}
+The system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} (and its simplified version~\cite{WellsH02}) is a system in Church-style with explicit type annotations in $\lambda$-binders where different derivations for the same subterm are managed by means of records.
+A record of types with labels from~$I$ is derived here by a record of terms of corresponding labels from $I$.
 
-The line of research on Intersection Logic~\cite{ronchi,ronchi10,ronchi12} inspired the development of a vector-based sequent calculus, which we refer to as $(\vdash_{\textnormal{IL}})$, along with corresponding Kripke semantics~\cite{DudenhefnerU21} for Intersection Logic.
-Proof search in $(\vdash_{\textnormal{IL}})$ corresponds to inhabitation in $(\vdash_{\textnormal{BCD}})$.
-It is natural to compare fragments of $(\vdash_{\textnormal{IL}})$ in which the length of vectors is bounded by $k$, which we refer to as $(\vdash_{\textnormal{IL}}^k)$, to the presented dimensionally bounded system.
+Similarly to $\lambda^{\text{CIL}}$, the system by Liquori and Ronchi della Rocca~\cite{LiquoriR07} is a system with explicit annotations at $\lambda$-binders.
+It introduces terms in which variables in binders are annotated with indices.
+Then these indices serve as pointers to binders in derivations, and the binders in derivations contain types.
 
-The construction in the proof of Lemma~\ref{lem:exp_blowup_1} will not induce arbitrary large vectors in $(\vdash_{\textnormal{IL}}^k)$.
-This is because $(\vdash_{\textnormal{IL}}^k)$ has subtyping and also allows sets of types to appear at the right of the arrow type construction.
-Therefore, $(\vdash_{\textnormal{IL}}^k)$ does not require any intersection introduction for derivations occurring in the construction in the proof of Lemma~\ref{lem:exp_blowup_1}.
+The proof system for \emph{Intersection Logic} presented by Pimentel, Ronchi Della Rocca, and Roversi~\cite{PimentelRR12} features independent derivations in tuples led according to the same proof rules.
+Effectively, this works like an intersection type system with vectors.
+However, the system does not have proof terms and relies on explicit exchange and weakening rules.
+Another version of the proof system is formulated in terms of a sequent calculus~\cite{RoccaSSV10}.
 
-The most important difference between $(\vdash_{\textnormal{IL}}^k)$ and $(\vdash_k)$ is that reorganization of vector coordinates in premises is realized via inverse images of surjective functions (see rule (R)~\cite[Figure~1]{DudenhefnerU21}).
+The line of research on Intersection Logic~\cite{ronchi,ronchi10,PimentelRR12} inspired the development of a vector-based sequent calculus, which we refer to as $(\vdash_{\textnormal{IL}})$, along with corresponding Kripke semantics~\cite{DudenhefnerU21} for Intersection Logic.
+Proof search in $(\vdash_{\textnormal{IL}})$ corresponds to inhabitation in 
+the system of Barendregt, Coppo and Dezani-Ciancaglini~\cite{BarendregtCD83}.
+It is natural to compare fragments of $(\vdash_{\textnormal{IL}})$ in which the length of vectors is bounded to the presented dimensionally bounded system~\textbf{R}.
+%The construction in the proof of Lemma~\ref{lem:exp_blowup_1} will not induce arbitrary large vectors in $(\vdash_{\textnormal{IL}}^k)$.
+%This is because $(\vdash_{\textnormal{IL}}^k)$ has subtyping and also allows sets of types to appear at the right of the arrow type construction.
+%Therefore, $(\vdash_{\textnormal{IL}}^k)$ does not require any intersection introduction for derivations occurring in the construction in the proof of Lemma~\ref{lem:exp_blowup_1}.
+The most important difference is that in $(\vdash_{\textnormal{IL}})$ reorganization of vector coordinates in premises is realized via inverse images of surjective functions (see rule (R)~\cite[Figure~1]{DudenhefnerU21}).
 For example, for the function $f$ such that $f(1) = 1 = f(2)$ the inverse image of the vector $(\{a,b\})$ under $f$ is $f^{-1}((\{a,b\})) = (\{a,b\}, \{a,b\})$.
-Information in premises is duplicated and there is no granular control over the \emph{relevant} part of assumptions.
-Establishing such granular control can be realized via relations, generalizing functions, which is the aim of the system $(\vdash_k)$ in the present work.
+As a result, information is duplicated and there is no granular control over the \emph{relevant} part of assumptions.
+Establishing such granular control can be realized via relations, generalizing functions, which is the aim of system~\textbf{R} in the present work.
 
-\subparagraph*{Dissimilar systems}
-\begin{itemize}
-\item The system by Luigi Liquori and Simona Ronchi della Rocca
-  \cite{LiquoriR07} is a system with explicit annotations at
-  $\lambda$-binders. It introduces  terms in which variables in
-  binders are annotated with indices. Then these indices serve as
-  pointers to binders in derivations, and the binders in derivations
-  contain types.
-\end{itemize}
+
+
 
 \subparagraph*{Paper organization} The present work is structured as follows: 
 \begin{description}
@@ -463,7 +461,7 @@ If $\Gamma \vdash_k t : \bar{A}$ and $R \subseteq \{1, \ldots, \dim(\bar{A})\} \
 \end{description}
 \end{proof}
 
-The following Example~\ref{xmp:deduplicate} illustrates use of the above Lemma~\ref{lem:transform} to permute, remove, or copy vector coordinates in derivations.
+The following Example~\ref{xmp:deduplicate} illustrates use of the above lemma to permute, remove, or copy vector coordinates in derivations.
 
 \begin{example}\label{xmp:deduplicate}
     Assume $\Gamma \vdash_k t : (A_1, A_2, A_3)$. By Lemma~\ref{lem:transform} we have:
@@ -488,7 +486,33 @@ A subtle aspect of Lemma~\ref{lem:transform} is that coordinate copies do not in
     where $R := \{(1,1),(1,2),(2,1),(2,2),(3,1),(3,2)\}$ and $R((\{a\},\{b\},\{c\})) = (\sigma, \sigma)$.
 \end{example}
 
-The substitution lemma requires tight control over the way flows in the derivation of the term to be substituted fit variables of the term under substitution. This is managed by an appropriate relation $R$.
+Let us discuss the properties of the dimension bound with respect to different notions of reduction.
+It is neither invariant under $\beta$-expansion (Example~\ref{xmp:no-beta-expansion}), $\eta$-expansion (Example~\ref{xmp:no-eta-expansion}), nor under $\eta$-reduction (Example~\ref{xmp:no-eta-reduction}).
+
+\begin{example}\label{xmp:no-beta-expansion}
+    We have $\emptyset \vdash_1 (\lambda x.x)\,(\lambda x.x) : (\{a\} \to a)$ in bounded dimension $1$ and $(\lambda y.y\,y)\,(\lambda x.x) \to_\beta (\lambda x.x)\,(\lambda x.x)$.
+    However, $\emptyset \vdash_k (\lambda y.y\,y)\,(\lambda x.x) : (\{a\} \to a)$ requires $k \geq 2$.
+    This matches the understanding that typing a non-linear $\beta$-redex in an intersection type system may require intersection introduction.
+\end{example}
+
+
+%This is coherent with the understanding that typability of normal forms does not require intersection introduction (see principal schemes for normal forms~\cite[Definition~8]{cdv80}).
+
+\begin{example}\label{xmp:no-eta-expansion}
+    We have $\emptyset \vdash_1 \lambda x.x : (\{\{a, b\} \to c\} \to \{a, b\} \to c)$ in bounded dimension $1$ and $\lambda x y.x\,y \to_\eta \lambda x.x$.
+    However, $\emptyset \vdash_k \lambda x y.x\,y : (\{\{a, b\} \to c\} \to \{a, b\} \to c)$ requires $k \geq 2$.
+\end{example}
+
+\begin{example}\label{xmp:no-eta-reduction}
+    We have $\emptyset \vdash_1 \lambda x y.x\,y : (\{\{a\} \to c\} \to \{a, b\} \to c)$ and $\lambda x y.x\,y \to_\eta \lambda x.x$.
+    However, $\emptyset \not\vdash_k \lambda x.x : (\{\{a\} \to c\} \to \{a, b\} \to c)$ for any dimension bound $k$.
+\end{example}
+
+The above Example~\ref{xmp:no-eta-expansion} and Example~\ref{xmp:no-eta-reduction} are coherent with intersection type systems which do not include subtyping and do require intersection introduction in order to assign an intersection of types (cf.\,Theorem~\ref{theorem:vanBakelS} and the line of work by van Bakel~\cite{Bakel04,Bakel11}).
+
+Let us conclude this section by showing that for each dimension bound subject reduction with respect to $\beta$-reduction holds.
+This is achieved by careful management of information flow in the proof of the following substitution lemma.
+The crucial aspect of the proof is an appropriate choice of a relation in the application case.
 
 \begin{lemma}[Substitution Lemma]
     \label{lem:substitution-lemma}
@@ -541,7 +565,7 @@ The substitution lemma requires tight control over the way flows in the derivati
     The proof is by induction over $t$.
     \begin{description}
     \item[Case $t = x$:] This case is impossible since $x$ is in $\beta$-normal form.
-    \item[Case $t = \lambda x.v$:] In this case, reduction has actually the form 
+    \item[Case $t = \lambda x.v$:] In this case, reduction actually has the form 
     $t=\lambda x.v\to_\beta \lambda x.v' = u$ where $v\to_\beta v'$. The only way to derive
     type for $\lambda x.v$ is to use rule ($\Rightarrow$I). This means that $\bar{B} = \bar{\sigma}\Rightarrow\bar{A}$ for some $\bar{\sigma}$ and $\bar{A}$. From that we get
     a derivation for $\Gamma, x:\bar{\sigma}\vdash_k v : \bar{A}$. We can now use the induction
@@ -569,28 +593,7 @@ The substitution lemma requires tight control over the way flows in the derivati
     \end{description}
 \end{proof}
 
-The present notion of dimension is neither invariant under $\beta$-expansion (Example~\ref{xmp:no-beta-expansion}), $\eta$-expansion (Example~\ref{xmp:no-eta-expansion}), nor under $\eta$-reduction (Example~\ref{xmp:no-eta-reduction}).
 
-\begin{example}\label{xmp:no-beta-expansion}
-    We have $\emptyset \vdash_1 (\lambda x.x)\,(\lambda x.x) : (\{a\} \to a)$ in bounded dimension $1$ and $(\lambda y.y\,y)\,(\lambda x.x) \to_\beta (\lambda x.x)\,(\lambda x.x)$.
-    However, $\emptyset \vdash_k (\lambda y.y\,y)\,(\lambda x.x) : (\{a\} \to a)$ requires $k \geq 2$.
-    This matches the understanding that typing a non-linear $\beta$-redex in an intersection type system may require intersection introduction.
-\end{example}
-
-
-%This is coherent with the understanding that typability of normal forms does not require intersection introduction (see principal schemes for normal forms~\cite[Definition~8]{cdv80}).
-
-\begin{example}\label{xmp:no-eta-expansion}
-    We have $\emptyset \vdash_1 \lambda x.x : (\{\{a, b\} \to c\} \to \{a, b\} \to c)$ in bounded dimension $1$ and $\lambda x y.x\,y \to_\eta \lambda x.x$.
-    However, $\emptyset \vdash_k \lambda x y.x\,y : (\{\{a, b\} \to c\} \to \{a, b\} \to c)$ requires $k \geq 2$.
-\end{example}
-
-\begin{example}\label{xmp:no-eta-reduction}
-    We have $\emptyset \vdash_1 \lambda x y.x\,y : (\{\{a\} \to c\} \to \{a, b\} \to c)$ and $\lambda x y.x\,y \to_\eta \lambda x.x$.
-    However, $\emptyset \not\vdash_k \lambda x.x : (\{\{a\} \to c\} \to \{a, b\} \to c)$ for any dimension $k$.
-\end{example}
-
-The above Example~\ref{xmp:no-eta-expansion} and Example~\ref{xmp:no-eta-reduction} are coherent with intersection type systems which do not include subtyping and do require intersection introduction in order to assign an intersection of types (cf.\,Theorem~\ref{theorem:vanBakelS} and the line of work by van Bakel~\cite{Bakel04,Bakel11}).
 
 \section{Relation to Traditional Intersection Type Systems}
 \label{sec:iff_BCD}
@@ -737,7 +740,7 @@ The rules of the strict system are slightly adapted to notation used in this pap
     \end{description}
 \end{proof}
 
-An important consequence of the lemma above is that many properties of the van Bakel's system are inherited. In particular, system \textbf{R} has the strong normalization property as van Bakel's system has \cite[Theorem~7.5]{Bakel04}.
+An important consequence of the lemma above is that many properties of van Bakel's system are inherited. In particular, system \textbf{R} has the strong normalization property as van Bakel's system has \cite[Theorem~7.5]{Bakel04}.
 
 As a final step, we establish the connection with the system BCD of Barendregt, Coppo, Dezani-Ciancaglini \cite{BarendregtCD83}.
 The set of types in this system is bigger than the set of strict types of van Bakel.
@@ -947,7 +950,7 @@ In the non-deterministic guess of the shape $\lambda x.u$, if $x$ is assigned th
 Overall, the space required by the alternating decision procedure is polynomial in $(N+1)^k$, yielding an \textsf{AEXPSPACE}, or equivalently, a \textsf{2-EXPTIME} decision procedure.
 \end{proof}
 
-If we fix a dimension $k$, we obtain an \textsf{EXPTIME} inhabitation decision procedure.
+If we fix a dimension bound $k$, we obtain an \textsf{EXPTIME} inhabitation decision procedure.
 To avoid an exponential blowup, it is essential for the subformula property to not include strict subsets of sets of types occurring in the input (cf.~Example~\ref{xmp:subformula_no_blowup}).
 
 \begin{theorem}\label{thm:upper_complexity_bound_fixed}
@@ -963,10 +966,11 @@ To avoid an exponential blowup, it is essential for the subformula property to n
 \label{sec:mset_dim}
 Comparing the dimensionally bounded system \textbf{R} to the currently most expressive dimensionally bounded system $(\Vdash_k)$ with decidable inhabitation~\cite[Section~3.2]{DudenhefnerR17}, one can observe several differences.
 
-The system $(\Vdash_k)$ introduces non-idempotent intersection types\footnote{Differently from traditional literature~\cite{BucciarelliKV17}, non-idempotence captures intersection introduction as a resource.} (multisets to the left of the arrow) as annotations throughout the derivation.
+The system $(\Vdash_k)$ introduces non-idempotent intersection types (multisets to the left of the arrow) as annotations throughout the derivation in order to capture intersection introduction as a resource.
+%different from traditional literature~\cite{BucciarelliKV17}}
 This induces additional bookkeeping (see side condition $(\star)$~\cite[Section~3.2]{DudenhefnerR17} in rule $(\cap\textnormal{I})$), and the  correspondence to established intersection type systems (both idempotent and non-idempotent) is not immediate.
 
-The most important difference is that the individual dimensions in system $(\Vdash_k)$ are strictly less comprehensive wrt. inhabited terms.
+The most important difference is that the individual dimensions in system $(\Vdash_k)$ are strictly less comprehensive with respect to inhabited terms.
 First, any derivation in $(\Vdash_k)$ can be translated to a derivation in $(\vdash_k)$.
 
 \begin{lemma}\label{lem:multiset_to_vector}
@@ -1013,14 +1017,13 @@ Second, the following Lemma~\ref{lem:exp_blowup_1} shows that there are types $A
         \DisplayProof
   }
     \end{displaymath}
-    Where $\Gamma = \{x: (\{a_0, b_0\}, \{a_0, b_0\}), y: (\sigma_n, \sigma_n), z: (\tau_n, \tau_n) \}$
-    and $R := \{(1,1), (1,2), (2, 1),$ $(2,2)\}$, observing that $R(\Gamma) = \Gamma$.
+    Where for the environment $\Gamma := \{x: (\{a_0, b_0\}, \{a_0, b_0\}), y: (\sigma_n, \sigma_n), {z: (\tau_n, \tau_n)} \}$ and the relation $R := \{(1,1), (1,2), (2, 1), (2,2)\}$ we observe that $R(\Gamma) = \Gamma$.
     \item An inhabitant of $A_n$ is necessarily of shape $\lambda xyz.z\,(y \ldots (y\,x) \ldots)$ such that $y$ occurs at least $n$ times and each occurrence of $y$ doubles the annotation multiset cardinality.\qedhere
     \end{enumerate}
     
 \end{proof}
 
-Third, complementarily to the above Lemma~\ref{lem:exp_blowup_1}, there is a family of terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
+Third, complementarily to the above lemma, there is a family of terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
 
 \begin{lemma}\label{lem:exp_blowup_2}
     There exists a type $A$ and a family of terms $\{t_1, t_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
@@ -1063,7 +1066,7 @@ Still, the immediate answer is not satisfactory.
 The construction in the proof of Lemma~\ref{lem:exp_blowup_1} can easily be accommodated for by identifying identical constraints.
 The modified inhabitation procedure would remain in \textsf{EXPSPACE}.
 
-A key property of procedure~$\mathcal{A}_{\langle d \rangle}$ is that environments in simultaneous constraints are monotone wrt.~pointwise inclusion.
+A key property of procedure~$\mathcal{A}_{\langle d \rangle}$ is that environments in simultaneous constraints are monotone with respect to pointwise inclusion.
 That is, there is no need to strengthen type assumptions.
 This is different for the system $(\vdash_k)$ for which in rule ($\Rightarrow$E) type assumptions of premises are combined, including the action of a relation $R$.
 Without the monotonicity condition, the \textsf{EXPSPACE} (or, alternating exponential time) argument is not applicable.
@@ -1076,16 +1079,22 @@ Overall, the present notion of dimension lies between the multiset dimension (\t
 
 We introduced a new syntax-directed intersection type system related to traditional systems \cite{BarendregtCD83,Bakel04,Bakel11}, where typing judgments infer vectors of types rather than single types. Special relations control information flow between vector components, allowing precise tracking of information flow while keeping derivations syntax-directed and manageable. Vectors also enable a natural restriction on derivations: only vectors of dimension at most $k$ are allowed, which is crucial for later results.
 
-The main motivation for this system was to obtain a formalism in which bounding a resource, here, the number of information-flow channels corresponding to vector dimension, renders inhabitation decidable. With the maximal dimension being part of the input, inhabitation is \textsf{2-EXPTIME} decidable, and fixing it as a parameter yields an \textsf{EXPTIME} procedure. Without a bound, inhabitation becomes undecidable, as typability for such system is equivalent to strong normalizability.{\color{red} undecidability of typability has nothing to do with undecidability of inhabitation - we need to refer to Pawe\l's rank 3 paper} We also establish \textsf{EXPSPACE}-hardness when the maximal dimension is part of the input, leaving the exact complexity as an open problem.
+The main motivation for this system was to obtain a formalism in which bounding a~resource, here, the number of information-flow channels corresponding to vector dimension, renders inhabitation decidable. With the maximal dimension being part of the input, inhabitation is \textsf{2-EXPTIME} decidable, and fixing it as a parameter yields an \textsf{EXPTIME} procedure. Without a bound, inhabitation becomes undecidable \cite{urzy09}, as typings in our system are equivalent to ones in traditional systems. We also establish \textsf{EXPSPACE}-hardness when the maximal dimension is part of the input, leaving the exact complexity as an open problem.
 
-An earlier system \cite{DudenhefnerR17} imposes a similar dimensional restriction. We therefore provided a detailed comparison highlighting both conceptual similarities and key differences in expressiveness and technical treatment, throughout which we are also able to see that system \textbf{R} offers a simpler and strictly more comprehensive framework that is easier to use in practice.
+An earlier system \cite{DudenhefnerR17} imposes a~similar dimensional restriction. We therefore provided a detailed comparison highlighting both conceptual similarities and key differences in expressiveness and technical treatment, throughout which demonstrating that system \textbf{R} offers a simpler and strictly more comprehensive framework that is easier to use in practice.
 
 \subparagraph*{Further work} Determining the precise complexity of inhabitation in the setting of system~\textbf{R} remains an open and challenging problem. Addressing it would require resolving subtle combinatorial issues that arise from the interplay of bounded resources and vector-based type structures, making this a promising direction for future research.
 
-Another important avenue of investigation concerns type inference for system \textbf{R}. Since the system incorporates features of both set and multiset interpretations of types, it is not immediately clear whether the typability problem falls into \textsf{NP} or \textsf{PSPACE}, as established for related systems by Rehof and Dudenhefner \cite{DudenhefnerR17typ}. Studying this question could provide deeper insight into the algorithmic behavior of the system. As the system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} was also developed in the context of type inference problems, it would be interesting to compare it with the current system on the technical level.
+Another important avenue of investigation concerns type inference for system \textbf{R}.
+Since the system incorporates features of both set and multiset interpretations of types, it is not immediately clear whether the typability problem falls into \textsf{NP} or \textsf{PSPACE}, as established for related systems by Rehof and Dudenhefner \cite{DudenhefnerR17typ}.
+Studying this question could provide deeper insight into the algorithmic behavior of the system.
+Similarly to the system \textbf{Rel} of de~Carvalho~\cite{Carvalho18}, it is interesting whether binary relations in system~\textbf{R} can be related to term evaluation by means of a Krivine machine.
+As the system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} was also developed in the context of type inference problems, it would be interesting to compare it with the current system on the technical level.
 
-Finally, intersection type systems are often extended with subtyping, so developing a version of system \textbf{R} with subtyping presents another interesting direction. Such an extension could potentially support subject reduction under $\eta$-reduction, but it would also complicate the algorithmic analysis of type inference problems, requiring careful treatment to balance expressiveness and decidability.
+%As the system \textbf{Rel} of de~Carvalho~\cite{Carvalho18} uses relations in its denotational models, it is interesting to see the way the binary relations in the current system~\textbf{R} fit into this kind of denotational semantics as well as how they describe computations in Krivine machine.
 
+As the system of de~Carvalho~\cite[Definition~4.1]{Carvalho18} uses relations in its models, it is interesting to see how the binary relations in the current system~\textbf{R} fit into this kind of denotational semantics. It is also interesting to see how they describe computations in the Krivine machine.
 
+Finally, intersection type systems are often extended with subtyping, so developing a~version of system \textbf{R} with subtyping presents another interesting direction. Such an extension could potentially support subject reduction under $\eta$-reduction, but it would also complicate the algorithmic analysis of type inference problems, requiring careful treatment to balance expressiveness and decidability.
 
 \end{document}
