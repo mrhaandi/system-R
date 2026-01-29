@@ -41,7 +41,7 @@
 
 \author{Aleksy Schubert}{University of Warsaw, Poland}{alx@mimuw.edu.pl}{}{}{}
 
-\author{Jakob Rehof}{TU Dortmund University and Lamarr Institute for ML and AI, Germany}{jakob.rehof@cs.tu-dortmund.de}{ttps://orcid.org/0000-0002-6023-8921}{}{}
+\author{Jakob Rehof}{TU Dortmund University and Lamarr Institute for ML and AI, Germany}{jakob.rehof@cs.tu-dortmund.de}{https://orcid.org/0000-0002-6023-8921}{}{}
 
 \authorrunning{A. Dudenhefner, A. Schubert, and J. Rehof} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
 
@@ -142,7 +142,7 @@ The system $\lambda^{\text{CIL}}$ by Wells et al.~\cite{WellsDMT02} (and its sim
 A record of types with labels from~$I$ is derived here by a record of terms of corresponding labels from $I$.
 Term syntax in $\lambda^{\text{CIL}}$ is enriched with record management capabilities, which we avoid in system~\textbf{R}.
 
-Similarly to $\lambda^{\text{CIL}}$, the system by Liquori and Ronchi della Rocca~\cite{LiquoriR07} is a system with explicit annotations at $\lambda$-binders.
+Similarly to $\lambda^{\text{CIL}}$, the system by Liquori and Ronchi Della Rocca~\cite{LiquoriR07} is a system with explicit annotations at $\lambda$-binders.
 It introduces terms in which variables in binders are annotated with indices.
 These indices serve as pointers to binders in derivations, and the binders in derivations contain types.
 Again similarly to $\lambda^{\text{CIL}}$, term syntax is enriched with type derivation information to establish a Church-style calculus.
@@ -184,7 +184,7 @@ Establishing such granular control can be realized via relations, generalizing f
 We denote \emph{intersection types} by $A, B$, finite sets of intersection types by $\sigma, \tau$, and \emph{type atoms} by $a, b$.
 
 \begin{definition}[Intersection Types]
-\label{def:itypes} ~
+\label{def:itypes}~
 
 $\begin{array}{rcl}
 %\mbox{Types} \ni & 
@@ -299,9 +299,9 @@ Judgments in the following \emph{system \textbf{R}} with \emph{dimension bound} 
 
 \begin{definition}[System \textbf{R} with Dimension Bound $k$]
 \label{def:bounded-type-system}
-~\\
+~
 
-\begin{minipage}{\textwidth}
+\begin{minipage}{0.9\textwidth}
 \centering
 %\begin{tabular}{c}
 
@@ -612,7 +612,7 @@ The rules of the strict system are slightly adapted to notation used in this pap
 
 ~
 
-\begin{minipage}{\textwidth}
+\begin{minipage}{0.9\textwidth}
 \centering
 \begin{tabular}{l}
 {\RightLabel{\textnormal{($\cap$E)}}
@@ -837,7 +837,7 @@ The considerations above give us the following comparison of derivability in sys
     Consider now $\bar{B} = (B_1,\ldots,B_n)$. 
     We now define a context $\Gamma$ so that $\dom(\Gamma)=\dom(\Sigma)$ and $(x:\bar{\rho}_x)\in\Gamma$ for
     $\bar{\rho}_x = (\underbrace{\rho,\ldots,\rho}_{n\mbox{\scriptsize -times}})$
-    where $(x:\rho)\in\Sigma$. Note that $\Gamma_{[i]} = \Sigma$ so Lemma~\ref{lemma:fromvanBakel} gives us that  $\Gamma\vdash_k t:\bar{B}$ for some $k$. 
+    where $(x:\rho)\in\Sigma'$. Note that $\Gamma_{[i]} = \Sigma'$ so Lemma~\ref{lemma:fromvanBakel} gives us that  $\Gamma\vdash_k t:\bar{B}$ for some $k$. 
     Note that $\{\bar{B}_{[1]},\ldots,\bar{B}_{[n]}\}\leq\sigma$ by (*).
 \end{proof}
 
@@ -968,114 +968,7 @@ To avoid an exponential blowup, it is essential for the subformula property to n
 \end{proof}
 
 \section{Comparison with the Multiset-dimensional System}
-\label{sec:mset_dim}
-Comparing the dimensionally bounded system \textbf{R} to the currently most expressive dimensionally bounded system $(\Vdash_k)$ with decidable inhabitation~\cite[Section~3.2]{DudenhefnerR17}, one can observe several differences.
-
-The system $(\Vdash_k)$ introduces non-idempotent intersection types (multisets to the left of the arrow) as annotations throughout the derivation in order to capture intersection introduction as a resource.
-%different from traditional literature~\cite{BucciarelliKV17}}
-This induces additional bookkeeping (see side condition $(\star)$~\cite[Section~3.2]{DudenhefnerR17} in rule $(\cap\textnormal{I})$), and the  correspondence to established intersection type systems (both idempotent and non-idempotent) is not immediate.
-
-The most important difference is that the individual dimensions in system $(\Vdash_k)$ are strictly less comprehensive with respect to inhabited terms.
-First, any derivation in $(\Vdash_k)$ can be translated to a derivation in $(\vdash_k)$.
-
-\begin{lemma}\label{lem:multiset_to_vector}
-    If $\Gamma_{[1]} \Vdash_k t : A$ and $\dim(\Gamma) = 1$, then $\Gamma \vdash_k t : (A)$.
-\end{lemma}
-
-\begin{proof}
-    Both ($\Vdash_k$) and ($\vdash_k$) follow derivations in ($\vdash_S$).
-    Using lexicographic ordering, multisets of cardinality at most $k$ at top-level can be captured by vectors of size at most $k$.
-    Therefore, the same construction as the proof of Lemma~\ref{lemma:fromvanBakel} applies for the translation.    
-\end{proof}
-
-Since inhabitation in $(\Vdash_k)$ is \textsf{EXPSPACE}-complete~\cite[Theorem~34]{DudenhefnerR17}, the above Lemma~\ref{lem:multiset_to_vector} implies \textsf{EXPSPACE}-hardness of inhabitation in $(\vdash_k)$.
-
-\begin{corollary}\label{cor:inh_lower_bound}
-    Given $\Gamma$, $\bar{A}$, and $k$ it is \textsf{EXPSPACE}-hard to decide whether the judgment $\Gamma \vdash_k t : \bar{A}$ is derivable for some term $t$.
-\end{corollary}
-
-Second, the following Lemma~\ref{lem:exp_blowup_1} shows that there are types $A_1, A_2, \ldots$ which are inhabited in dimension $2$, but each $A_i$ requires multiset dimension $2^i$ to be assigned to any term. 
-
-\begin{lemma}\label{lem:exp_blowup_1}
-    There exists a family of types $\{A_1, A_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
-    \begin{enumerate}
-        \item The size (number of nodes in the syntax tree) of $A_n$ is linear in $n$.
-        \item There exists a term $t_n$ such that $\emptyset \vdash_2 t_n : (A_n)$.
-        \item If there exists a term $u_n$ such that $\emptyset \Vdash_k u_n : A_n$, then $k \geq 2^n$.
-    \end{enumerate}
-\end{lemma}
-
-\begin{proof}
-    Let $\sigma_n := \bigcup\limits_{i=1}^n \{ \{a_i, b_i\} \to a_{i+1}, \{a_i, b_i\} \to b_{i+1} \}$,
-    $\tau_n := \{\{a_{n+1}, b_{n+1}\} \to c\}$
-    and $A_n := \{a_0, b_0\} \to \sigma_n \to \tau_n \to c$.
-    \begin{enumerate}
-        \item This property holds by definition.
-        \item Let $v_0 := x$ and $v_{i+1} := y\,v_i$ for $i \in \{0, \ldots, n\}$ and let $t_n := \lambda xyz.z\,v_n$.
-        We have $\emptyset \vdash_2 t_n : (A_n)$.
-        The crucial iterated step for $i = 1, \ldots n$ is
-            \begin{displaymath}
-       {\RightLabel{\textnormal{($\Rightarrow$E)}}
-         \AxiomC{$\Gamma \vdash_2 y : R((a_i, b_i)) \Rightarrow (a_{i+1}, b_{i+1})$}
-        \AxiomC{$\Gamma \vdash_2 v_i : (a_i, b_i)$}
-        \BinaryInfC{$\Gamma \vdash_2 y\,v_i : (a_{i+1}, b_{i+1})$}
-        \DisplayProof
-  }
-    \end{displaymath}
-    Where for the environment $\Gamma := \{x: (\{a_0, b_0\}, \{a_0, b_0\}), y: (\sigma_n, \sigma_n), {z: (\tau_n, \tau_n)} \}$ and the relation $R := \{(1,1), (1,2), (2, 1), (2,2)\}$ we observe that $R(\Gamma) = \Gamma$.
-    \item An inhabitant of $A_n$ is necessarily of shape $\lambda xyz.z\,(y \ldots (y\,x) \ldots)$ such that $y$ occurs at least $n$ times and each occurrence of $y$ doubles the annotation multiset cardinality.\qedhere
-    \end{enumerate}
-    
-\end{proof}
-
-Third, complementarily to the above lemma, there is a family of terms which are typed at a specific type $A$ in dimension $2$, but require an exponentially large multiset dimension.
-
-\begin{lemma}\label{lem:exp_blowup_2}
-    There exists a type $A$ and a family of terms $\{t_1, t_2, \ldots\}$ such that for all $n \in \mathbb{N}$:
-    \begin{enumerate}
-        \item The size (number of nodes in the syntax tree) of $t_n$ is linear in $n$.
-        \item $\emptyset \vdash_2 t_n : (A)$.
-        \item If $\emptyset \Vdash_k t_n : A$, then $k \geq 2^n$.
-    \end{enumerate}
-\end{lemma}
-
-\begin{proof}
-    Let $u_0 := x$ and $u_{n+1} := y\,u_n$ for $n \in \mathbb{N}$, and let $t_n := \lambda xyz.z\,u_n$.
-    Additionally, let $\sigma := \{\{a, b\} \to a, \{a, b\} \to b\}$,
-    let $\tau := \{\{a, b\} \to c\}$,
-    and let $A := \{a, b\} \to \sigma \to \tau \to c$.
-    \begin{enumerate}
-        \item This property holds by definition.
-        \item We have $\emptyset \vdash_2 t_n : (A)$.
-        The crucial step for $i \in \mathbb{N}$ is
-            {\begin{displaymath}
-            \RightLabel{\textnormal{($\Rightarrow$E)}}
-            \AxiomC{$\Gamma \vdash_2 y : R((a, b)) \Rightarrow (a, b)$}
-            \AxiomC{$\Gamma \vdash_2 u_i : (a, b)$}
-            \BinaryInfC{$\Gamma \vdash_2 y\,u_i : (a, b)$}
-            \DisplayProof
-            \end{displaymath}}%
-        Where $\Gamma := \{x: (\{a, b\}, \{a, b\}), y: (\sigma, \sigma), z: (\tau, \tau) \}$
-    and $R := \{(1,1), (1,2), (2, 1), (2,2)\}$, observing that $R(\Gamma) = \Gamma$.
-        \item Similarly to the proof of Lemma~\ref{lem:exp_blowup_1}, each occurrence of $y$ via rule $(\cap\textnormal{I})$  doubles the annotation multiset cardinality.\qedhere
-    \end{enumerate}
-\end{proof}
-
-The avid reader may wonder: why is the \textsf{EXPSPACE} inhabitation procedure~$\mathcal{A}_{\langle d \rangle}$~\cite{DudenhefnerR17}, which respects a bound $d$ on the multiset dimension, not suited for inhabitation in dimensionally bounded system~\textbf{R}?
-One immediate answer is given by the construction in the proof of Lemma~\ref{lem:exp_blowup_1}.
-Iterative intersection introduction strictly increases multiset dimension.
-This is reflected in procedure~$\mathcal{A}_{\langle d \rangle}$ via \emph{multisets of simultaneous constraints} with strictly increasing cardinalities on intersection introduction.
-
-Still, the immediate answer is not satisfactory.
-The construction in the proof of Lemma~\ref{lem:exp_blowup_1} can easily be accommodated for by identifying redundant constraints.
-The modified inhabitation procedure would remain in \textsf{EXPSPACE}.
-
-A key property of procedure~$\mathcal{A}_{\langle d \rangle}$ is that environments in simultaneous constraints are monotone with respect to pointwise inclusion.
-That is, there is no need to strengthen type assumptions.
-This is different for the system~\textbf{R} for which in rule ($\Rightarrow$E) type assumptions of premises are combined, including the action of a relation $R$.
-This violates the monotonicity condition, and the \textsf{EXPSPACE} (or, alternating exponential time) argument is not applicable.
-
-Overall, the present notion of dimension lies strictly between the multiset dimension (\textsf{EXPSPACE}-complete inhabitation~\cite[Theorem~34]{DudenhefnerR17}) and set dimension (undecidable inhabitation~\cite[Theorem~28]{DudenhefnerR17}), while preserving decidability of inhabitation.
+\input{comparison}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -1103,5 +996,7 @@ Finally, intersection type systems are often extended with subtyping, so develop
 \newpage
 
 \bibliography{bibliography}
+
+%\newpage\input{appendix}
 
 \end{document}
